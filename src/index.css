@@ -5,13 +5,17 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+<<<<<<< HEAD
   contain: content;
+=======
+>>>>>>> ad2b6d5 (Initialize project using Create React App)
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+<<<<<<< HEAD
 
 /* html, body, #root, .app-wrapper {
   height: 100%;
@@ -21,3 +25,5 @@ code {
 } */
 
 
+=======
+>>>>>>> ad2b6d5 (Initialize project using Create React App)
