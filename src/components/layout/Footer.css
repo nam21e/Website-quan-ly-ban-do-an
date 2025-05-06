@@ -1,0 +1,38 @@
+.custom-footer {
+    background-color: #000;
+    color: white;
+    font-size: 14px;
+  }
+  
+  .footer-title {
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+  
+  .footer-line {
+    border: none;
+    height: 2px;
+    width: 40px;
+    background-color: #d1771f;
+    margin: 0.5rem 0 1rem;
+  }
+  
+  .footer-text {
+    line-height: 1.8;
+  }
+  
+  .btn-orange {
+    background-color: #d1771f;
+    color: white;
+    border: none;
+  }
+  
+  .btn-orange:hover {
+    background-color: #bd610b;
+  }
+  
+  .footer-bottom {
+    background-color: #111;
+    color: #ccc;
+  }
+  
