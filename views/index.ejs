@@ -2,31 +2,20 @@
 <html>
 <head>
 <meta charset="utf-8" />
-<title>Green Age - Free Website Template</title>
+<title>Green Age</title>
 
 <link rel="stylesheet" href="/css/tooplate_style.css" />
-<link rel="stylesheet" href="/css/nivo-slider.css" />
 
-<script src="/js/jquery.js"></script>
-<script src="/js/jquery.nivo.slider.js"></script>
+<!-- jQuery mới -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Nivo Slider CDN -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nivo-slider/3.2/css/nivo-slider.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/nivo-slider/3.2/jquery.nivo.slider.min.js"></script>
 
 <script>
-function clearText(field) {
-    if (field.defaultValue == field.value) field.value = '';
-    else if (field.value == '') field.value = field.defaultValue;
-}
-
 $(window).on('load', function() {
-    $('#slider').nivoSlider({
-        effect:'random',
-        slices:10,
-        animSpeed:500,
-        pauseTime:2200,
-        startSlide:0,
-        directionNav:false,
-        controlNav:false,
-        pauseOnHover:true
-    });
+    $('#slider').nivoSlider();
 });
 </script>
 
@@ -36,29 +25,17 @@ $(window).on('load', function() {
 
 <div id="tooplate_wrapper">
 
-    <!-- HEADER -->
     <%- include('partials/header') %>
-
-    <!-- MENU -->
     <%- include('partials/menu') %>
-
-    <!-- SLIDER -->
     <%- include('partials/slider') %>
 
-    <!-- MAIN -->
     <div id="tooplate_main">
-
-        <!-- WELCOME -->
         <%- include('partials/welcome') %>
-
-        <!-- PROJECTS -->
         <%- include('partials/projects') %>
-
     </div>
 
 </div>
 
-<!-- FOOTER -->
 <%- include('partials/footer') %>
 
 </body>

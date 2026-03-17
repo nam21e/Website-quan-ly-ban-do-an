@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Green Age</title>
+
+    <link rel="stylesheet" href="/css/tooplate_style.css">
+    <link rel="stylesheet" href="/css/nivo-slider.css">
+
+    <!-- FIX LỖI: dùng jQuery mới -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/js/jquery.nivo.slider.js"></script>
+
+    <script>
+    function clearText(field){
+        if (field.defaultValue == field.value) field.value = '';
+        else if (field.value == '') field.value = field.defaultValue;
+    }
+
+    $(window).on('load', function() {
+        $('#slider').nivoSlider();
+    });
+    </script>
+</head>
+
+<body class="homepage">
+
+<div id="tooplate_wrapper">
+
+<div id="tooplate_header">
+    <div id="site_title">
+        <h1><a href="/">Green Age</a></h1>
+    </div>
+</div>
+
+<div id="tooplate_menu">
+    <ul>
+        <li><a href="/" class="current">Home</a></li>
+        <li><a href="#">Gallery</a></li>
+        <li><a href="#">News</a></li>
+        <li><a href="#">Blog</a></li>
+        <li class="last"><a href="#">Contact</a></li>
+    </ul>
+
+    <div id="search_box">
+        <form>
+            <input type="text" value="Search" onfocus="clearText(this)" onblur="clearText(this)">
+        </form>
+    </div>
+</div>
