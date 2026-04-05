@@ -13,13 +13,13 @@ const TagPage = () => {
     }, [tag]);
 
     return (
-        <div className="container py-5">
+        <div className="container py-3">
             <h3 className="mb-4 fw-bold">Bài viết với tag: <span className="text-success">"{tag}"</span></h3>
             <div className="row g-4">
                 {posts.map(post => (
                     <div key={post.id} className="col-md-4">
                         <Link to={`/post/${post.id}`} className="text-decoration-none text-dark">
-                            <img src={`http://localhost:5094/images/${post.imageUrl}`} alt={post.title} className="w-100" style={{ height: '180px', objectFit: 'cover' }} />
+                            <img src={`http://localhost:5094/images/${post.imageUrl}`} alt={post.title} className="w-100" style={{ height: '220px', objectFit: 'cover' }} />
                             <h6 className="mt-2 fw-bold">{post.title}</h6>
                             <small className="text-muted">{post.authorName} - {new Date(post.createdAt).toLocaleDateString('vi-VN')}</small>
                         </Link>

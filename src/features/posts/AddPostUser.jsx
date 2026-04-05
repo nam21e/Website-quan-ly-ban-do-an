@@ -21,7 +21,8 @@ const AddPostUser = () => {
     const { isLoggedIn } = useAuth();
 
     useEffect(() => {
-        setEditorReady(true);
+        const timeout = setTimeout(() => setEditorReady(true), 300);
+        return () => clearTimeout(timeout);
     }, []);
 
     if (!isLoggedIn) return <Navigate to="/login" replace />;
@@ -41,15 +42,6 @@ const AddPostUser = () => {
 
     const handleRemoveTag = (tagToRemove) => {
         setTags(tags.filter(tag => tag !== tagToRemove));
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        await submitForm('/api/post/upload', '🎉 Đăng bài thành công! Chờ duyệt từ admin.');
-    };
-
-    const handleSaveDraft = async () => {
-        await submitForm('/api/post/draft', 'Lưu bản nháp thành công!');
     };
 
     const submitForm = async (url, successMessage) => {
@@ -72,13 +64,26 @@ const AddPostUser = () => {
             setTitle('');
             setRegionId('');
             setImageFile(null);
-            setContent('');
+            setTimeout(() => setContent(''), 100);
             setTags([]);
             if (imageInputRef.current) imageInputRef.current.value = null;
         } catch (error) {
             console.error('Lỗi:', error.response?.data || error.message);
             toast.error(error.response?.data?.message || '❌ Đăng bài thất bại. Vui lòng thử lại!');
         }
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!editorReady || !content.trim()) return;
+        await new Promise(r => setTimeout(r, 300));
+        await submitForm('/api/post/upload', '🎉 Đăng bài thành công! Chờ duyệt từ admin.');
+    };
+
+    const handleSaveDraft = async () => {
+        if (!editorReady || !content.trim()) return;
+        await new Promise(r => setTimeout(r, 300));
+        await submitForm('/api/post/draft', 'Lưu bản nháp thành công!');
     };
 
     function CustomUploadAdapterPlugin(editor) {
@@ -105,7 +110,7 @@ const AddPostUser = () => {
     }
 
     return (
-        <div className="container py-5">
+        <div className="container py-3">
             <h2 className="text-center text-success fw-bold mb-4">Viết Bài Mới</h2>
             <p className="text-center text-muted">
                 Bạn Đang Xem: <Link to="/">Trang Chủ</Link> &gt; <Link to="/profile">Tài Khoản</Link> &gt;{' '}
@@ -113,7 +118,7 @@ const AddPostUser = () => {
             </p>
 
             <form onSubmit={handleSubmit} className="row mt-4">
-                <div className="col-md-8 mb-4 editor-wrapper" style={{ minHeight: '500px' }}>
+                <div className="col-md-8 mb-4 editor-wrapper" style={{ minHeight: '500px', position: 'relative', zIndex: 1 }}>
                     {editorReady && (
                         <CKEditor
                             editor={ClassicEditor}
@@ -212,10 +217,19 @@ const AddPostUser = () => {
                     </div>
 
                     <div className="d-flex gap-3 mt-4">
-                        <button type="button" className="btn btn-outline-secondary flex-fill" onClick={handleSaveDraft}>
+                        <button
+                            type="button"
+                            className="btn btn-outline-secondary flex-fill"
+                            onClick={handleSaveDraft}
+                            disabled={!editorReady || !content.trim()}
+                        >
                             Lưu Bản Nháp
                         </button>
-                        <button type="submit" className="btn btn-danger flex-fill">
+                        <button
+                            type="submit"
+                            className="btn btn-danger flex-fill"
+                            disabled={!editorReady || !content.trim()}
+                        >
                             Đăng Bài Viết
                         </button>
                     </div>

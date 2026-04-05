@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './Register.css';
+import { FaUser, FaEnvelope, FaLock, FaIdBadge } from 'react-icons/fa';
 
 const Register = () => {
   const [form, setForm] = useState({
@@ -9,6 +11,7 @@ const Register = () => {
     password: '',
     confirmPassword: ''
   });
+
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
@@ -28,9 +31,15 @@ const Register = () => {
       const data = await res.json();
       if (res.ok) {
         localStorage.setItem('token', data.token);
+        localStorage.setItem('fullName', data.fullName);
+        localStorage.setItem('email', data.email);
+        localStorage.setItem('username', data.username);
+        localStorage.setItem('roles', JSON.stringify(data.roles));
         navigate('/');
       } else {
-        const message = data.message || (Array.isArray(data) ? data[0]?.description : 'Đăng ký thất bại');
+        const message =
+          data.message ||
+          (Array.isArray(data) ? data[0]?.description : 'Đăng ký thất bại');
         setError(message);
       }
     } catch (err) {
@@ -39,32 +48,118 @@ const Register = () => {
   };
 
   return (
-    <div className="container py-5" style={{ maxWidth: '500px' }}>
-      <h3 className="mb-4">Đăng ký</h3>
-      {error && <div className="alert alert-danger">{error}</div>}
-      <form onSubmit={handleSubmit}>
-        <div className="form-group mb-3">
-          <label>Họ và Tên</label>
-          <input type="text" className="form-control" name="fullName" value={form.fullName} onChange={handleChange} required />
+    <div
+      className="register-page"
+      style={{ backgroundImage: "url('/images/register.jpg')" }}
+    >
+      <div className="register-card">
+        
+        {/* Header đẹp */}
+        <div className="register-header">
+          <div className="register-avatar">
+            <FaIdBadge />
+          </div>
+          <h2>Đăng ký</h2>
+          <p>Tạo tài khoản để lưu lại món ăn yêu thích của bạn.</p>
         </div>
-        <div className="form-group mb-3">
-          <label>Tên đăng nhập</label>
-          <input type="text" className="form-control" name="username" value={form.username} onChange={handleChange} required />
+
+        {error && <div className="alert alert-danger">{error}</div>}
+
+        <form onSubmit={handleSubmit}>
+          
+          {/* Họ và tên */}
+          <div className="form-group-custom">
+            <label>Họ và Tên</label>
+            <div className="input-icon-wrapper">
+              <FaUser className="input-icon" />
+              <input
+                type="text"
+                name="fullName"
+                value={form.fullName}
+                onChange={handleChange}
+                className="input-custom"
+                placeholder="Nhập họ và tên"
+                required
+              />
+            </div>
+          </div>
+
+          {/* Tên đăng nhập */}
+          <div className="form-group-custom">
+            <label>Tên đăng nhập</label>
+            <div className="input-icon-wrapper">
+              <FaUser className="input-icon" />
+              <input
+                type="text"
+                name="username"
+                value={form.username}
+                onChange={handleChange}
+                className="input-custom"
+                placeholder="Nhập tên đăng nhập"
+                required
+              />
+            </div>
+          </div>
+
+          {/* Email */}
+          <div className="form-group-custom">
+            <label>Email</label>
+            <div className="input-icon-wrapper">
+              <FaEnvelope className="input-icon" />
+              <input
+                type="email"
+                name="email"
+                value={form.email}
+                onChange={handleChange}
+                className="input-custom"
+                placeholder="Nhập email"
+                required
+              />
+            </div>
+          </div>
+
+          {/* Mật khẩu */}
+          <div className="form-group-custom">
+            <label>Mật khẩu</label>
+            <div className="input-icon-wrapper">
+              <FaLock className="input-icon" />
+              <input
+                type="password"
+                name="password"
+                value={form.password}
+                onChange={handleChange}
+                className="input-custom"
+                placeholder="Nhập mật khẩu"
+                required
+              />
+            </div>
+          </div>
+
+          {/* Nhập lại mật khẩu */}
+          <div className="form-group-custom">
+            <label>Nhập lại mật khẩu</label>
+            <div className="input-icon-wrapper">
+              <FaLock className="input-icon" />
+              <input
+                type="password"
+                name="confirmPassword"
+                value={form.confirmPassword}
+                onChange={handleChange}
+                className="input-custom"
+                placeholder="Nhập lại mật khẩu"
+                required
+              />
+            </div>
+          </div>
+
+          {/* Nút đăng ký */}
+          <button type="submit" className="btn-register">Đăng ký</button>
+        </form>
+
+        <div className="register-footer-text">
+          Đã có tài khoản? <a href="/login">Đăng nhập</a>
         </div>
-        <div className="form-group mb-3">
-          <label>Email</label>
-          <input type="email" className="form-control" name="email" value={form.email} onChange={handleChange} required />
-        </div>
-        <div className="form-group mb-3">
-          <label>Mật khẩu</label>
-          <input type="password" className="form-control" name="password" value={form.password} onChange={handleChange} required />
-        </div>
-        <div className="form-group mb-3">
-          <label>Nhập lại mật khẩu</label>
-          <input type="password" className="form-control" name="confirmPassword" value={form.confirmPassword} onChange={handleChange} required />
-        </div>
-        <button type="submit" className="btn btn-success">Đăng ký</button>
-      </form>
+      </div>
     </div>
   );
 };

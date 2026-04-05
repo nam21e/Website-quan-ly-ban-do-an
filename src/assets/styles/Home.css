@@ -158,3 +158,69 @@
   font-size: 15px;
   margin-bottom: 0.25rem;
 }
+
+/* ====== LOGO WATERMARK NỀN TRẮNG ====== */
+.home-logo-watermark {
+  position: absolute;
+  top: 120px;               /* chỉnh theo bố cục thực tế */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 480px;            /* chỉnh lớn nhỏ tùy thích */
+  opacity: 0.06;           /* độ mờ, tăng giảm tùy ý */
+  z-index: 0;              /* luôn nằm dưới nội dung */
+  pointer-events: none;    /* không ảnh hưởng click */
+}
+
+.home-wrapper {
+  position: relative;       /* để watermark bám đúng container */
+}
+/* ===== LOGO WATERMARK NỀN TRẮNG TRANG HOME ===== */
+.home-wrapper {
+  position: relative;
+  background-color: #ffffff;
+}
+
+.home-logo-watermark {
+  position: absolute;
+  top: 120px;               /* chỉnh cao / thấp tùy ý */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 420px;             /* kích thước logo */
+  opacity: 0.06;            /* độ mờ cho nhẹ mắt */
+  pointer-events: none;     /* không chặn click */
+  z-index: 0;
+}
+
+.home-content {
+  position: relative;
+  z-index: 1;               /* đảm bảo nội dung nằm trên logo */
+}
+/* ===== NỀN MÀU BE CHO TRANG HOME ===== */
+.home-bg {
+  background-color: #f7f3e9 !important;  /* màu be */
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* đảm bảo container không che watermark */
+.home-wrapper {
+  position: relative;
+}
+
+/* watermark logo (giữ nguyên nếu bạn đang dùng) */
+.home-logo-watermark {
+  position: absolute;
+  top: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 420px;
+  opacity: 0.06;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.home-content {
+  position: relative;
+  z-index: 2;
+}
+

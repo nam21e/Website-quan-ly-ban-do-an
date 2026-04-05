@@ -1,0 +1,116 @@
+/* Nền trang */
+.register-page {
+  min-height: 100vh;
+  padding: 40px 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-size: cover;
+  background-position: center;
+}
+
+/* Khung form sáng */
+.register-card {
+  width: 100%;
+  max-width: 460px;
+  background: #ffffff;        /* sáng – dễ nhìn */
+  color: #333;
+  border-radius: 14px;
+  padding: 32px 30px;
+  box-shadow: 0 10px 35px rgba(0,0,0,0.15); 
+}
+
+/* Header */
+.register-header {
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.register-header h2 {
+  color: #333;
+}
+
+.register-header p {
+  color: #666;
+}
+
+/* Icon avatar */
+.register-avatar {
+  width: 60px;
+  height: 60px;
+  background: #4CAF50; /* xanh lá dễ nhìn */
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 26px;
+  margin: 0 auto 10px;
+}
+
+/* Form group */
+.form-group-custom label {
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 5px;
+  display: block;
+}
+
+/* Input với icon */
+.input-icon-wrapper {
+  position: relative;
+}
+
+.input-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #4CAF50;                /* icon xanh */
+  font-size: 15px;
+}
+
+.input-custom {
+  width: 100%;
+  padding: 10px 12px 10px 38px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: #f7f7f7;            /* sáng */
+  font-size: 14px;
+  color: #333;
+}
+
+.input-custom:focus {
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 2px #4caf5040;
+}
+
+/* Button */
+.btn-register {
+  width: 100%;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 12px 0;
+  font-size: 15px;
+  border-radius: 6px;
+  margin-top: 10px;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+.btn-register:hover {
+  background: #45a049;
+}
+
+/* Footer */
+.register-footer-text {
+  text-align: center;
+  margin-top: 12px;
+  color: #555;
+}
+
+.register-footer-text a {
+  color: #4CAF50;
+  font-weight: 600;
+}
