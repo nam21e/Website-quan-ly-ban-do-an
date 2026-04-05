@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="f3ccde5e-20b7-44fe-8c2c-4468c337dc12" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/assets/styles/ChatBotBox.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/ui/ChatBotBox.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/features/admin/AdminStatsChart.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/banner-01.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/banner-02.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/banner-03.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/blog-detail-01.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/blog-list-01.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/blog-list-02.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/blog-list-03.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/blog-list-04.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/blog-list-05.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/blog-list-06.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/entertaiment-01.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/entertaiment-02.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/entertaiment-03.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/entertaiment-04.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/entertaiment-05.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/entertaiment-06.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/entertaiment-07.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/entertaiment-08.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/entertaiment-09.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/entertaiment-10.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/entertaiment-11.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/entertaiment-12.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/entertaiment-13.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/entertaiment-14.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/entertaiment-15.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/entertaiment-16.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/entertaiment-17.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/entertaiment-18.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/entertaiment-19.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/entertaiment-20.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/entertaiment-21.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/latest-01.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/latest-02.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/latest-03.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/latest-04.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/latest-05.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/latest-06.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/popular-post-01.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/popular-post-02.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/popular-post-03.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/popular-post-04.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/popular-post-05.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/popular-post-06.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-01.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-02.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-03.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-04.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-05.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-06.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-07.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-08.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-09.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-10.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-11.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-12.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-13.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-14.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-15.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-16.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-17.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-18.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-19.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-20.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-21.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-22.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-23.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-24.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-25.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-26.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-27.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-28.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-29.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-30.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-31.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-32.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-33.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-34.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-35.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-36.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-37.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-38.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-39.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-40.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-41.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-42.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-43.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-44.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-45.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-46.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-47.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-48.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-49.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/post-50.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/images/video-01.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/public/manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/assets/styles/editor.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/assets/styles/editor.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/admin/AdminSidebar.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/admin/AdminSidebar.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/layout/Footer.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/layout/Footer.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/layout/Footer.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/layout/Footer.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/layout/Header.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/layout/Header.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/layout/Header.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/layout/Header.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/admin/AdminUserList.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/admin/AdminUserList.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/admin/CommentList.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/admin/CommentList.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/admin/EditPost.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/admin/EditPost.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/admin/PostList.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/admin/PostList.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/admin/ViewPost.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/assets/styles/post/ViewPost.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/admin/ViewPost.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/admin/ViewPost.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/auth/AdminLogin.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/auth/AdminLogin.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/auth/ForgotPassword.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/auth/ForgotPassword.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/auth/Login.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/auth/Login.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/auth/Register.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/auth/Register.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/posts/AddPostUser.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/posts/AddPostUser.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/posts/PostDetail.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/posts/PostDetail.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/posts/TagPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/posts/TagPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/profile/EditDraft.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/profile/EditDraft.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/profile/UserProfile.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/profile/UserProfile.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Home.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Home.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/SearchResults.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/SearchResults.jsx" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="ProjectErrors" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2
+}</component>
+  <component name="ProjectId" id="2vz2XiwiTn6v5RuseVDbvpE6w2l" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;JavaScript Debug.localhost:5094.executor&quot;: &quot;Debug&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/CSharp/fereactjs&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;npm.start.executor&quot;: &quot;Run&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\WebStorm 2025.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\CSharp\fereactjs\src\assets\styles\post" />
+    </key>
+  </component>
+  <component name="RunManager" selected="npm.start">
+    <configuration name="localhost:5094" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:5094/">
+      <method v="2" />
+    </configuration>
+    <configuration name="start" type="js.build_tools.npm">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="start" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="JavaScript Debug.localhost:5094" />
+      <item itemvalue="npm.start" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JavaScript Debug.localhost:5094" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-6a121458b545-JavaScript-WS-251.25410.117" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="f3ccde5e-20b7-44fe-8c2c-4468c337dc12" name="Changes" comment="" />
+      <created>1745133624585</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1745133624585</updated>
+      <workItem from="1745133626004" duration="809000" />
+      <workItem from="1745143514303" duration="1335000" />
+      <workItem from="1745144873649" duration="62000" />
+      <workItem from="1745144944624" duration="383000" />
+      <workItem from="1745145338408" duration="12000" />
+      <workItem from="1745145359513" duration="3236000" />
+      <workItem from="1745150777809" duration="2386000" />
+      <workItem from="1745154119409" duration="40000" />
+      <workItem from="1745154255213" duration="1643000" />
+      <workItem from="1745157235609" duration="2123000" />
+      <workItem from="1745236615772" duration="2575000" />
+      <workItem from="1745298282239" duration="597000" />
+      <workItem from="1745312562221" duration="5173000" />
+      <workItem from="1745319487457" duration="9799000" />
+      <workItem from="1745332665635" duration="1129000" />
+      <workItem from="1745395024773" duration="2327000" />
+      <workItem from="1745466633165" duration="1799000" />
+      <workItem from="1745471044729" duration="11335000" />
+      <workItem from="1745496344194" duration="3542000" />
+      <workItem from="1745503704957" duration="581000" />
+      <workItem from="1745548190600" duration="384000" />
+      <workItem from="1745552264948" duration="4200000" />
+      <workItem from="1745556687624" duration="1891000" />
+      <workItem from="1745565417556" duration="12467000" />
+      <workItem from="1745579975633" duration="11972000" />
+      <workItem from="1745593416011" duration="2002000" />
+      <workItem from="1745595881519" duration="356000" />
+      <workItem from="1745638345299" duration="1992000" />
+      <workItem from="1745733582878" duration="850000" />
+      <workItem from="1745736289506" duration="4933000" />
+      <workItem from="1745754072316" duration="2438000" />
+      <workItem from="1745758005479" duration="4562000" />
+      <workItem from="1745764510192" duration="402000" />
+      <workItem from="1745824050644" duration="839000" />
+      <workItem from="1745840842690" duration="1347000" />
+      <workItem from="1745842755990" duration="7130000" />
+      <workItem from="1745907337464" duration="9117000" />
+      <workItem from="1745925846469" duration="8101000" />
+      <workItem from="1745934025646" duration="2845000" />
+      <workItem from="1745990337165" duration="7322000" />
+      <workItem from="1746009399102" duration="9133000" />
+      <workItem from="1746077815669" duration="5204000" />
+      <workItem from="1746083606775" duration="998000" />
+      <workItem from="1746086001485" duration="5322000" />
+      <workItem from="1746099813469" duration="6085000" />
+      <workItem from="1746109917822" duration="1094000" />
+      <workItem from="1746162588601" duration="1947000" />
+      <workItem from="1746191878303" duration="1967000" />
+      <workItem from="1746195178940" duration="277000" />
+      <workItem from="1746362461056" duration="772000" />
+      <workItem from="1746415196515" duration="11000" />
+      <workItem from="1746448048364" duration="2148000" />
+      <workItem from="1746451865625" duration="1378000" />
+      <workItem from="1746520097893" duration="4601000" />
+      <workItem from="1746535691384" duration="227000" />
+      <workItem from="1746536694476" duration="216000" />
+      <workItem from="1746541170780" duration="1392000" />
+      <workItem from="1746542846121" duration="4640000" />
+      <workItem from="1746626769547" duration="5292000" />
+      <workItem from="1746632662270" duration="5124000" />
+      <workItem from="1746675132211" duration="12894000" />
+      <workItem from="1746710123161" duration="1731000" />
+      <workItem from="1746764972415" duration="533000" />
+      <workItem from="1746791442074" duration="4355000" />
+      <workItem from="1746797269360" duration="2105000" />
+      <workItem from="1746837627934" duration="813000" />
+      <workItem from="1746845229574" duration="1119000" />
+      <workItem from="1746874363596" duration="5482000" />
+      <workItem from="1746933118581" duration="1167000" />
+      <workItem from="1746934588994" duration="301000" />
+      <workItem from="1746934901131" duration="1217000" />
+      <workItem from="1746962377605" duration="9215000" />
+      <workItem from="1746974856287" duration="516000" />
+      <workItem from="1746976033897" duration="937000" />
+      <workItem from="1747017403771" duration="664000" />
+      <workItem from="1747053702180" duration="2198000" />
+      <workItem from="1747144487428" duration="1343000" />
+      <workItem from="1747146789751" duration="684000" />
+      <workItem from="1747148356450" duration="4354000" />
+      <workItem from="1747196997476" duration="3977000" />
+      <workItem from="1747225177362" duration="2217000" />
+      <workItem from="1747380640714" duration="208000" />
+      <workItem from="1747389240956" duration="4496000" />
+      <workItem from="1747404118766" duration="86000" />
+      <workItem from="1747476965704" duration="1554000" />
+      <workItem from="1747548552868" duration="2924000" />
+      <workItem from="1747557219406" duration="1592000" />
+      <workItem from="1747559861672" duration="1314000" />
+      <workItem from="1747583463985" duration="172000" />
+      <workItem from="1747660646424" duration="4562000" />
+      <workItem from="1747708054892" duration="639000" />
+      <workItem from="1747725308983" duration="781000" />
+      <workItem from="1747740191609" duration="747000" />
+      <workItem from="1747751221175" duration="418000" />
+      <workItem from="1747837278421" duration="1611000" />
+      <workItem from="1747840109509" duration="4556000" />
+      <workItem from="1747886616451" duration="838000" />
+      <workItem from="1747893785524" duration="2140000" />
+      <workItem from="1747895954259" duration="1499000" />
+      <workItem from="1747915420760" duration="2254000" />
+      <workItem from="1747975683160" duration="3608000" />
+      <workItem from="1747988301391" duration="2596000" />
+      <workItem from="1747991054672" duration="2801000" />
+      <workItem from="1747995114486" duration="806000" />
+      <workItem from="1748009098632" duration="599000" />
+      <workItem from="1748093179961" duration="1199000" />
+      <workItem from="1748145751529" duration="2000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
