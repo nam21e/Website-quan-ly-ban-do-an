@@ -1,0 +1,116 @@
+/* Vùng bao toàn bộ nội dung chi tiết */
+.lead {
+  font-size: 1.1rem;
+  line-height: 1.9;
+  color: #333;
+  word-break: break-word;
+}
+
+/* Khoảng cách đoạn */
+.lead p {
+  margin-bottom: 1.25rem;
+}
+
+/* Tiêu đề trong bài viết */
+.lead h2, .lead h3 {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+/* Ảnh trong nội dung */
+.lead img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 1.5rem auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* Danh sách gạch đầu dòng */
+.lead ul {
+  padding-left: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.lead ul li {
+  margin-bottom: 0.5rem;
+}
+
+/* Danh sách đánh số */
+.lead ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.lead ol li {
+  margin-bottom: 0.5rem;
+}
+
+/* Blockquote */
+.lead blockquote {
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+  background-color: #f8f9fa;
+  border-left: 4px solid #007bff;
+  font-style: italic;
+  color: #555;
+}
+
+/* Table */
+.lead table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+}
+
+.lead table th,
+.lead table td {
+  border: 1px solid #ddd;
+  padding: 0.75rem;
+  text-align: left;
+}
+
+/* Responsive fix */
+@media (max-width: 768px) {
+  .lead {
+    font-size: 1rem;
+  }
+
+  .lead img {
+    margin: 1rem 0;
+  }
+}
+
+/* ✅ Hiển thị YouTube embed từ CKEditor */
+.post-body-content oembed,
+.post-body-content iframe {
+  display: block;
+  margin: 1.5rem auto;
+  max-width: 100%;
+  width: 100%;
+  height: 400px;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Giới hạn ảnh trong nội dung bài viết */
+.post-body-content img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 10px auto;
+  border-radius: 6px;
+}
+
+.editor-wrapper .ck-editor__editable_inline {
+  min-height: 400px;
+}
+
+.post-tags-section {
+  margin-top: 24px; /* hoặc 32px nếu muốn rộng hơn */
+}
+

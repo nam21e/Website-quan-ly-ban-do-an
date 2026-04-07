@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Green Age</title>
+
+<link rel="stylesheet" href="/css/tooplate_style.css" />
+
+<!-- jQuery mới -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Nivo Slider CDN -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nivo-slider/3.2/css/nivo-slider.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/nivo-slider/3.2/jquery.nivo.slider.min.js"></script>
+
+<script>
+$(window).on('load', function() {
+    $('#slider').nivoSlider();
+});
+</script>
+
+</head>
+
+<body class="homepage">
+
+<div id="tooplate_wrapper">
+
+    <%- include('partials/header') %>
+    <%- include('partials/menu') %>
+    <%- include('partials/slider') %>
+
+    <div id="tooplate_main">
+        <%- include('partials/welcome') %>
+        <%- include('partials/projects') %>
+    </div>
+
+</div>
+
+<%- include('partials/footer') %>
+
+</body>
+</html>
