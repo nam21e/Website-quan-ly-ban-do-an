@@ -5,8 +5,15 @@ const AdminSidebar = () => {
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        sessionStorage.removeItem('admin_token');
-        sessionStorage.removeItem('admin_username');
+        const confirmLogout = window.confirm("Bạn có chắc muốn đăng xuất?");
+        if (!confirmLogout) return;
+
+        localStorage.removeItem('admin_token');
+        localStorage.removeItem('admin_username');
+        localStorage.removeItem('admin_roles');
+        localStorage.removeItem('admin_email');
+        localStorage.removeItem('admin_fullName');
+
         navigate('/admin-login');
     };
 
@@ -33,15 +40,10 @@ const AdminSidebar = () => {
                         Quản lý bình luận
                     </NavLink>
                     <div className="sb-sidenav-menu-heading">Tài khoản</div>
-                    {/*<NavLink to="/admin/profile" className="nav-link">*/}
-                    {/*    <div className="sb-nav-link-icon"><i className="fas fa-user"></i></div>*/}
-                    {/*    Thông tin cá nhân*/}
-                    {/*</NavLink>*/}
                     <NavLink to="/admin/users" className="nav-link">
                         <div className="sb-nav-link-icon"><i className="fas fa-user"></i></div>
                         Quản Lý Người Dùng
                     </NavLink>
-
                     <button className="nav-link btn text-start text-white" onClick={handleLogout}>
                         <div className="sb-nav-link-icon"><i className="fas fa-sign-out-alt"></i></div>
                         Đăng xuất

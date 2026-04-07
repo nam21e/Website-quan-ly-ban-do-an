@@ -1,0 +1,95 @@
+.chatbot-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 999;
+}
+
+.chatbot-toggle {
+    background: #0d6efd;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.chatbot-box {
+    width: 400px;
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.chatbot-header {
+    font-size: 16px;
+    text-align: center;
+}
+
+.chatbot-history {
+    flex: 1;
+    overflow-y: auto;
+    background: #f8f9fa;
+    padding: 12px 16px 10px;
+    max-height: 620px;
+    /* ⬅️ tăng vùng chat hiển thị để không bị cắt */
+}
+
+.chat-msg {
+    padding: 8px 12px;
+    margin: 8px 0;
+    border-radius: 10px;
+    font-size: 14px;
+    white-space: pre-wrap;
+    max-width: 80%;
+}
+
+.chat-msg.user {
+    background: #d1e7dd;
+    align-self: flex-end;
+    margin-left: auto;
+}
+
+.chat-msg.bot {
+    background: #e9ecef;
+    align-self: flex-start;
+    margin-right: auto;
+}
+
+.chatbot-input {
+    padding: 10px;
+    background: #fff;
+    border-top: 1px solid #dee2e6;
+}
+
+.typing .dots span {
+    animation: blink 1.2s infinite;
+    margin-left: 2px;
+}
+
+.typing .dots span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing .dots span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes blink {
+    0% {
+        opacity: 0.2;
+    }
+
+    20% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.2;
+    }
+}

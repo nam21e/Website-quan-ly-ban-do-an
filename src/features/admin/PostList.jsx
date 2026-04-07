@@ -32,6 +32,7 @@ const PostList = () => {
         }
     };
 
+
     useEffect(() => {
         fetchPosts();
         fetchRegions();
@@ -52,10 +53,12 @@ const PostList = () => {
     };
 
     const filteredPosts = posts.filter(post => {
+        if (post.status === 'Nháp') return false; // ẩn bài viết nháp
         const matchTitle = post.title.toLowerCase().includes(searchTerm.toLowerCase());
         const matchRegion = selectedRegion ? post.regionName === selectedRegion : true;
         return matchTitle && matchRegion;
     });
+
 
     const indexOfLastPost = currentPage * postsPerPage;
     const indexOfFirstPost = indexOfLastPost - postsPerPage;
@@ -68,12 +71,8 @@ const PostList = () => {
         <div>
             <div className="d-flex justify-content-between align-items-center mb-3">
                 <h3 className="fw-bold">📋 Danh Sách Bài Viết</h3>
-                <button className="btn btn-primary" onClick={() => navigate('/admin/add-post')}>
-                    + Thêm Bài Viết
-                </button>
             </div>
 
-            {/* Search & Filter */}
             <div className="row mb-3">
                 <div className="col-md-6">
                     <input
@@ -91,7 +90,7 @@ const PostList = () => {
                         value={selectedRegion}
                         onChange={(e) => setSelectedRegion(e.target.value)}
                     >
-                    <option value="">-- Lọc theo vùng miền --</option>
+                        <option value="">-- Lọc theo vùng miền --</option>
                         {regions.map(region => (
                             <option key={region.id} value={region.name}>{region.name}</option>
                         ))}
@@ -101,83 +100,82 @@ const PostList = () => {
 
             <table className="table table-bordered table-hover">
                 <thead className="table-light">
-                <tr>
-                    <th>#</th>
-                    <th>Ảnh</th>
-                    <th>Tiêu Đề</th>
-                    <th>Tác Giả</th>
-                    <th>Trạng Thái</th>
-                    <th>Hành Động</th>
-                </tr>
+                    <tr>
+                        <th>#</th>
+                        <th>Ảnh</th>
+                        <th>Tiêu Đề</th>
+                        <th>Tác Giả</th>
+                        <th>Trạng Thái</th>
+                        <th>Hành Động</th>
+                    </tr>
                 </thead>
                 <tbody>
-                {currentPosts.length === 0 ? (
-                    <tr>
-                        <td colSpan="6" className="text-center">Không có bài viết nào.</td>
-                    </tr>
-                ) : (
-                    currentPosts.map((post, index) => (
-                        <tr key={post.id}>
-                            <td>{indexOfFirstPost + index + 1}</td>
-                            <td>
-                                <img
-                                    src={`http://localhost:5094/images/${post.imageUrl}`}
-                                    alt={post.title}
-                                    style={{ width: 70, height: 50, objectFit: 'cover' }}
-                                    className="rounded"
-                                />
-                            </td>
-                            <td>{post.title}</td>
-                            <td className="text-primary fw-semibold">{post.author || 'Ẩn danh'}</td>
-                            <td>
-                                <span className={`badge ${
-                                    post.status === 'Chờ Duyệt' ? 'bg-warning text-dark' :
-                                        post.status === 'Bị Từ Chối' ? 'bg-danger' :
-                                            post.status === 'Được Duyệt' ? 'bg-success' :
-                                                'bg-secondary'
-                                }`}>
-                                    {post.status}
-                                </span>
-                            </td>
-                            <td>
-                                {post.status === 'Chờ Duyệt' ? (
-                                    <button
-                                        className="btn btn-sm btn-success"
-                                        onClick={() => navigate('/admin/pending-posts')}
-                                    >
-                                        ✅ Duyệt
-                                    </button>
-                                ) : post.status === 'Bị Từ Chối' ? (
-                                    <button
-                                        className="btn btn-sm btn-outline-danger"
-                                        onClick={() => handleDelete(post.id)}
-                                    >
-                                        <FaTrash className="me-1" /> Xoá
-                                    </button>
-                                ) : (
-                                    <>
+                    {currentPosts.length === 0 ? (
+                        <tr>
+                            <td colSpan="7" className="text-center">Không có bài viết nào.</td>
+                        </tr>
+                    ) : (
+                        currentPosts.map((post, index) => (
+                            <tr key={post.id}>
+                                <td>{indexOfFirstPost + index + 1}</td>
+                                <td>
+                                    <img
+                                        src={`http://localhost:5094/images/${post.imageUrl}`}
+                                        alt={post.title}
+                                        style={{ width: 70, height: 50, objectFit: 'cover' }}
+                                        className="rounded"
+                                    />
+                                </td>
+                                <td>{post.title}</td>
+                                <td className="text-primary fw-semibold">{post.author || 'Ẩn danh'}</td>
+                                <td>
+                                    <span className={`badge ${
+                                        post.status === 'Chờ Duyệt' ? 'bg-warning text-dark' :
+                                            post.status === 'Bị Từ Chối' ? 'bg-danger' :
+                                                post.status === 'Được Duyệt' ? 'bg-success' :
+                                                    'bg-secondary'
+                                    }`}>
+                                        {post.status}
+                                    </span>
+                                </td>
+                                <td>
+                                    {post.status === 'Chờ Duyệt' ? (
                                         <button
-                                            className="btn btn-sm btn-outline-primary"
-                                            onClick={() => navigate(`/admin/edit-post/${post.id}`)}
+                                            className="btn btn-sm btn-success"
+                                            onClick={() => navigate('/admin/pending-posts')}
                                         >
-                                            ✏️ Xem / Sửa
+                                            ✅ Duyệt
                                         </button>
+                                    ) : post.status === 'Bị Từ Chối' ? (
                                         <button
-                                            className="btn btn-sm btn-outline-danger ms-2"
+                                            className="btn btn-sm btn-outline-danger"
                                             onClick={() => handleDelete(post.id)}
                                         >
                                             <FaTrash className="me-1" /> Xoá
                                         </button>
-                                    </>
-                                )}
-                            </td>
-                        </tr>
-                    ))
-                )}
+                                    ) : (
+                                        <>
+                                            <button
+                                                className="btn btn-sm btn-outline-primary"
+                                                onClick={() => navigate(`/admin/edit-post/${post.id}`)}
+                                            >
+                                                ✏️ Xem / Sửa
+                                            </button>
+                                            <button
+                                                className="btn btn-sm btn-outline-danger ms-2"
+                                                onClick={() => handleDelete(post.id)}
+                                            >
+                                                <FaTrash className="me-1" /> Xoá
+                                            </button>
+                                        </>
+                                    )}
+                                </td>
+                            </tr>
+                        ))
+                    )}
                 </tbody>
             </table>
 
-            {/* PHÂN TRANG */}
             {totalPages > 1 && (
                 <nav className="d-flex justify-content-center mt-3">
                     <ul className="pagination">

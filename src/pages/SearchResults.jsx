@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import axios from 'axios';
+import HotSidebar from '../../src/components/Post/HotSidebar';
 
 const SearchResults = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -26,7 +27,7 @@ const SearchResults = () => {
     };
 
     return (
-        <div className="container py-4">
+        <div className="container py-3">
             <h5 className="fw-bold mb-3">
                 Kết quả tìm kiếm cho: <span className="text-primary">{keyword}</span>
             </h5>
@@ -77,18 +78,7 @@ const SearchResults = () => {
 
                 {/* Sidebar bài viết phổ biến bên phải */}
                 <div className="col-md-4">
-                    <h6 className="fw-bold text-orange border-bottom pb-2">Bài viết phổ biến</h6>
-                    {results.slice(0, 5).map(post => (
-                        <Link to={`/post/${post.id}`} key={post.id} className="d-flex mb-3 text-decoration-none text-dark">
-                            <img
-                                src={`http://localhost:5094/images/${post.imageUrl}`}
-                                alt={post.title}
-                                style={{ width: 90, height: 60, objectFit: 'cover' }}
-                                className="rounded me-2"
-                            />
-                            <div><small>{post.title}</small></div>
-                        </Link>
-                    ))}
+                    <HotSidebar />
                 </div>
             </div>
         </div>

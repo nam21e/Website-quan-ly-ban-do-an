@@ -31,6 +31,12 @@ import AdminLogin from './features/auth/AdminLogin';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import AdminUserList from "./features/admin/AdminUserList";
+import AdminStatsChart from "./features/admin/AdminStatsChart";
+import RegionPosts from './pages/RegionPosts';
+import RegionPostsNam from './pages/RegionPostNam';
+import RegionPostsTrung from './pages/RegionPostsTrung';
+import ChatBotBox from '../src/components/ui/ChatBotBox';
+
 
 
 function App() {
@@ -50,10 +56,14 @@ function App() {
                 <Route path="/lien-he" element={<MainLayout><Contact/></MainLayout>} />
                 <Route path="/gioi-thieu" element={<MainLayout><About /></MainLayout>} />
                 <Route path="/tag/:tag" element={<MainLayout><TagPage /></MainLayout>} />
+                <Route path="/mien-bac" element={<MainLayout><RegionPosts /></MainLayout>} />
+                <Route path="/mien-trung" element={<MainLayout><RegionPostsTrung /></MainLayout>} />
+                <Route path="/mien-nam" element={<MainLayout><RegionPostsNam /></MainLayout>} />
                 <Route path="/admin-login" element={<AdminLogin />} />
 
                 {/* 🔒 Admin Routes Protected */}
                 <Route path="/admin" element={<RequireAdmin><AdminLayout /></RequireAdmin>}>
+                    <Route index element={<AdminStatsChart />} />
                     <Route path="posts" element={<PostList />} />
                     <Route path="add-region" element={<AddRegion />} />
                     <Route path="add-post" element={<AddPostAdmin />} />
@@ -62,6 +72,7 @@ function App() {
                     <Route path="pending-posts" element={<PendingPosts />} />
                     <Route path="comments" element={<CommentList />} />
                     <Route path="/admin/users" element={<AdminUserList />} />
+                    <Route path="/admin/AdminDashBoard" element={<AdminStatsChart />} />
                 </Route>
 
                 {/* 🚫 Access Denied */}
@@ -80,6 +91,7 @@ const MainLayout = ({ children }) => (
             {children}
         </div>
         <Footer />
+        <ChatBotBox />
     </>
 );
 

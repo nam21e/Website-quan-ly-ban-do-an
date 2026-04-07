@@ -5,8 +5,9 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import axios from 'axios';
 import RegionSelect from '../../components/ui/RegionSelect';
 import { useAuth } from '../auth/useAuth';
-import { toast } from 'react-toastify'; // 👈 import toast
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import '../../assets/styles/editor.css';
 
 const EditDraft = () => {
     const { id } = useParams();
@@ -20,7 +21,9 @@ const EditDraft = () => {
     const [oldImage, setOldImage] = useState('');
     const [tags, setTags] = useState([]);
     const [tagInput, setTagInput] = useState('');
+    const [editorReady, setEditorReady] = useState(false);
     const imageRef = useRef();
+    const tempContentRef = useRef('');
 
     useEffect(() => {
         axios.get(`/api/post/draft/${id}`, {
@@ -30,7 +33,7 @@ const EditDraft = () => {
                 const p = res.data;
                 if (p.status !== 'Nháp') return navigate('/profile');
                 setTitle(p.title);
-                setContent(p.content || '');
+                tempContentRef.current = p.content || '';
                 setRegionId(p.regionId);
                 setOldImage(p.imageUrl);
                 setTags(p.postTags?.map(pt => pt.tag.name) || []);
@@ -58,10 +61,15 @@ const EditDraft = () => {
     const handleUpdate = async (e) => {
         e.preventDefault();
 
+        if (!editorReady) {
+            toast.error("Trình soạn thảo chưa sẵn sàng.");
+            return;
+        }
+
         const formData = new FormData();
         formData.append('title', title);
         formData.append('regionId', regionId);
-        formData.append('content', content); // ✅ phải là string
+        formData.append('content', content);
         if (imageFile) formData.append('imageFile', imageFile);
         tags.forEach(tag => formData.append('tags', tag));
 
@@ -74,20 +82,16 @@ const EditDraft = () => {
             });
             toast.success('Cập nhật bản nháp thành công!');
         } catch (err) {
-            console.error("❌ Lỗi chi tiết:", err.response?.data || err.message);
+            console.error("Lỗi:", err.response?.data || err.message);
             toast.error('❌ Lỗi khi cập nhật bản nháp!');
         }
     };
 
-
     const handlePublish = async () => {
         if (!window.confirm('Bạn có chắc muốn đăng bài này không?')) return;
-
         try {
             await axios.post(`/api/post/publish/${id}`, {}, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`
-                }
+                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
             });
             toast.success('🎉 Bài viết đã được gửi duyệt!');
             navigate('/profile');
@@ -104,19 +108,16 @@ const EditDraft = () => {
                     const data = new FormData();
                     const file = await loader.file;
                     data.append('file', file);
-
                     try {
-                        const response = await axios.post('/api/post/ckeditor-upload', data, {
-                            headers: {
-                                Authorization: `Bearer ${localStorage.getItem('token')}`,
-                            },
+                        const res = await axios.post('/api/post/ckeditor-upload', data, {
+                            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
                         });
-                        return { default: response.data.url };
+                        return { default: res.data.url };
                     } catch (error) {
                         console.error('Upload error:', error);
                         throw error;
                     }
-                },
+                }
             };
         };
     }
@@ -124,19 +125,37 @@ const EditDraft = () => {
     if (!isLoggedIn) return <Navigate to="/login" replace />;
 
     return (
-        <div className="container py-5">
-            <h2 className="text-center text-primary fw-bold mb-4">Chỉnh sửa Bài Viết Nháp</h2>
+        <div className="container py-4">
+            <h2 className="text-center text-primary fw-bold mb-4">📝 Chỉnh sửa Bản Nháp</h2>
 
             <form onSubmit={handleUpdate} className="row mt-4">
-                <div className="col-md-8 mb-4 editor-wrapper" style={{ minHeight: '500px' }}>
+                <div className="col-md-8 mb-4 editor-wrapper" style={{ minHeight: '500px', position: 'relative', zIndex: 1 }}>
                     <CKEditor
                         editor={ClassicEditor}
                         config={{
                             extraPlugins: [CustomUploadAdapterPlugin],
-                            mediaEmbed: { previewsInData: true },
+                            toolbar: { shouldNotGroupWhenFull: true },
+                            htmlSupport: {
+                                allow: [
+                                    { name: 'img', attributes: true },
+                                    { name: 'iframe', attributes: true },
+                                    { name: 'a', attributes: true },
+                                    { name: 'p', attributes: true },
+                                    { name: 'h2', attributes: true },
+                                    { name: 'strong', attributes: true },
+                                    { name: 'ul', attributes: true },
+                                    { name: 'ol', attributes: true },
+                                    { name: 'li', attributes: true }
+                                ]
+                            }
                         }}
-                        data={content}
-                        onChange={(event, editor) => setContent(editor.getData())}
+                        onReady={(editor) => {
+                            setEditorReady(true);
+                            editor.setData(tempContentRef.current);  // ✅ Gán content thủ công
+                        }}
+                        onChange={(event, editor) => {
+                            setContent(editor.getData());
+                        }}
                     />
                 </div>
 
@@ -160,18 +179,15 @@ const EditDraft = () => {
                     </div>
 
                     <div className="mb-3">
-                        <label className="form-label">Ảnh hiện tại</label><br />
+                        <label className="form-label">Ảnh Hiện Tại</label><br />
                         {oldImage && (
                             <img
                                 src={`http://localhost:5094/images/${oldImage}`}
                                 alt="current"
-                                style={{ width: 150 }}
+                                className="img-fluid rounded mb-2"
+                                style={{ maxHeight: 150 }}
                             />
                         )}
-                    </div>
-
-                    <div className="mb-3">
-                        <label className="form-label">Đổi ảnh</label>
                         <input
                             type="file"
                             className="form-control"

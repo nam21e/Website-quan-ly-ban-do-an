@@ -11,7 +11,7 @@ const AdminLogin = () => {
         setError('');
 
         try {
-            const res = await axios.post('http://localhost:5094/api/Account/login', { username, password });
+            const res = await axios.post('http://localhost:5094/api/AdminAccount/login', { username, password });
             const { token, roles, fullName, email } = res.data;
             const payload = JSON.parse(atob(token.split('.')[1]));
             const roleList = Array.isArray(roles) ? roles : [payload.role];
@@ -30,7 +30,11 @@ const AdminLogin = () => {
             // ✅ Cách hoạt động chắc chắn
             window.location.href = '/admin';
         } catch (err) {
-            setError('Đăng nhập thất bại. Vui lòng kiểm tra lại.');
+            if (err.response?.data?.message) {
+                setError(err.response.data.message);
+            } else {
+                setError('Đăng nhập thất bại. Vui lòng kiểm tra lại.');
+            }
         }
     };
 

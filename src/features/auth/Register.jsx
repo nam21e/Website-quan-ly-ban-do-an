@@ -28,8 +28,13 @@ const Register = () => {
       const data = await res.json();
       if (res.ok) {
         localStorage.setItem('token', data.token);
+        localStorage.setItem('fullName', data.fullName);
+        localStorage.setItem('email', data.email);
+        localStorage.setItem('username', data.username);
+        localStorage.setItem('roles', JSON.stringify(data.roles));
         navigate('/');
-      } else {
+      }
+      else {
         const message = data.message || (Array.isArray(data) ? data[0]?.description : 'Đăng ký thất bại');
         setError(message);
       }

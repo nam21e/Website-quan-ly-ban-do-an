@@ -1,8 +1,7 @@
-import axios from 'axios';
+import axios from "axios";
 
-const API_URL = 'http://localhost:5094/api'; // đổi lại nếu bạn dùng cổng khác
+const api = axios.create({
+  baseURL: "http://localhost:3000",
+});
 
-export const getFoods = async () => {
-  const response = await axios.get(`${API_URL}/foods`);
-  return response.data;
-};
+export default api;

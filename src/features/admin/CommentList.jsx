@@ -27,7 +27,7 @@ const CommentList = () => {
     try {
       await axios.delete(`http://localhost:5094/api/comment/${id}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('admin_token')}` // ✅ FIX dùng đúng token admin
+          Authorization: `Bearer ${localStorage.getItem('admin_token')}`
         }
       });
       fetchComments();
