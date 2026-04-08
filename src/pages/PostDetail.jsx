@@ -221,6 +221,15 @@ const PostDetail = () => {
 
           <h1 className="fw-bold mb-3">{post.title}</h1>
 
+          <button
+            type="button"
+            className={`btn mb-3 ${isBookmarked ? 'btn-success' : 'btn-warning'}`}
+            onClick={handleToggleBookmark}
+            disabled={bookmarkLoading}
+          >
+            {bookmarkLoading ? 'Đang xử lý...' : isBookmarked ? 'Đã lưu bài' : 'Lưu bài'}
+          </button>
+
           {post.image_url && (
             <div className="mb-4">
               <img
@@ -236,15 +245,6 @@ const PostDetail = () => {
           )}
 
           <div className="mb-4 d-flex gap-2 flex-wrap">
-            <button
-              type="button"
-              className={`btn btn-sm ${isBookmarked ? 'btn-success' : 'btn-outline-success'}`}
-              onClick={handleToggleBookmark}
-              disabled={bookmarkLoading}
-            >
-              {bookmarkLoading ? 'Đang xử lý...' : isBookmarked ? 'Đã lưu bài' : 'Lưu bài'}
-            </button>
-
             <a
               href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}
               className="btn btn-sm btn-primary"

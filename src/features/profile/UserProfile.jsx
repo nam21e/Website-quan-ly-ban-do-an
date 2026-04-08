@@ -1,200 +1,207 @@
-import React, { useState, useEffect } from 'react';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useAuth } from '../../features/auth/useAuth';
-import avatar from '../../assets/images/avatar.png';
-import '../../assets/styles/UserProfile.css';
+import { Link } from 'react-router-dom';
 
-const TABS = ['Tất cả', 'Được Duyệt', 'Chờ Duyệt', 'Bị Từ Chối', 'Nháp', 'Bài đã lưu'];
+const API = 'http://localhost:3000';
+const DEFAULT_AVATAR = 'https://via.placeholder.com/80';
 
 const UserProfile = () => {
-  const [activeTab, setActiveTab] = useState('Tất cả');
-  const [posts, setPosts] = useState([]);
-  const [bookmarked, setBookmarked] = useState([]);
-  const { isLoggedIn } = useAuth();
-  const navigate = useNavigate();
-  const [currentPage, setCurrentPage] = useState(1);
-  const postsPerPage = 5;
+  const [bookmarks, setBookmarks] = useState([]);
+  const [myPosts, setMyPosts] = useState([]);
+  const [loadingBookmarks, setLoadingBookmarks] = useState(true);
+  const [loadingMyPosts, setLoadingMyPosts] = useState(true);
 
-  const fullName = localStorage.getItem('fullName') || 'Người dùng';
-  const email = localStorage.getItem('email');
+  const userId = localStorage.getItem('userId');
+  const username = localStorage.getItem('username');
+  const avatar = localStorage.getItem('avatar');
+
+  const fetchBookmarks = async () => {
+    try {
+      setLoadingBookmarks(true);
+
+      if (!userId) {
+        setBookmarks([]);
+        return;
+      }
+
+      const res = await axios.get(`${API}/bookmarks`, {
+        params: { user_id: userId },
+      });
+
+      setBookmarks(Array.isArray(res.data) ? res.data : []);
+    } catch (error) {
+      console.error('Lỗi tải bookmark:', error);
+      setBookmarks([]);
+    } finally {
+      setLoadingBookmarks(false);
+    }
+  };
+
+  const fetchMyPosts = async () => {
+    try {
+      setLoadingMyPosts(true);
+
+      if (!userId) {
+        setMyPosts([]);
+        return;
+      }
+
+      const res = await axios.get(`${API}/posts/my-posts`, {
+        params: { user_id: userId },
+      });
+
+      setMyPosts(Array.isArray(res.data) ? res.data : []);
+    } catch (error) {
+      console.error('Lỗi tải bài viết của tôi:', error);
+      setMyPosts([]);
+    } finally {
+      setLoadingMyPosts(false);
+    }
+  };
+
+  const handleDeletePost = async (postId) => {
+    const ok = window.confirm('Bạn có chắc muốn xóa bài viết này?');
+    if (!ok) return;
+
+    try {
+      await axios.delete(`${API}/posts/${postId}/user-delete`, {
+        data: { user_id: userId },
+      });
+
+      fetchMyPosts();
+    } catch (error) {
+      console.error('Lỗi xóa bài viết:', error);
+      alert(error?.response?.data?.message || 'Xóa bài viết thất bại');
+    }
+  };
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      navigate('/login');
-      return;
-    }
-
-    axios.get('http://localhost:5094/api/myposts/me', {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-        .then(res => setPosts(res.data))
-        .catch(err => {
-          console.error('Lỗi khi lấy bài viết:', err);
-          if (err.response?.status === 401) {
-            localStorage.clear();
-            navigate('/login');
-          }
-        });
-
-    axios.get('http://localhost:5094/api/Bookmark/my', {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-        .then(res => setBookmarked(res.data))
-        .catch(err => console.error('Lỗi khi lấy bài đã lưu:', err));
-  }, [navigate]);
-
-  const toggleBookmark = async (postId) => {
-    const token = localStorage.getItem('token');
-    if (!token) return;
-    try {
-      await axios.post(`http://localhost:5094/api/Bookmark/${postId}`, {}, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setBookmarked(prev => prev.filter(p => p.id !== postId));
-    } catch (err) {
-      console.error('Lỗi khi bỏ lưu bài viết:', err);
-    }
-  };
-
-  if (!isLoggedIn) return <Navigate to="/login" replace />;
-
-  let filteredPosts = [];
-  if (activeTab === 'Tất cả') {
-    filteredPosts = posts;
-  } else if (activeTab === 'Bài đã lưu') {
-    filteredPosts = bookmarked;
-  } else {
-    filteredPosts = posts.filter(p => p.status === activeTab);
-  }
-
-  const indexOfLastPost = currentPage * postsPerPage;
-  const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = filteredPosts.slice(indexOfFirstPost, indexOfLastPost);
-
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
-  const handleTabClick = (tab) => {
-    setActiveTab(tab);
-    setCurrentPage(1);
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("email");
-    localStorage.removeItem("fullName");
-    localStorage.removeItem("username");
-    localStorage.removeItem("roles");
-    navigate('/login');
-  };
+    fetchBookmarks();
+    fetchMyPosts();
+  }, []);
 
   return (
-      <div className="container py-3 user-profile">
-        <div className="d-flex align-items-center mb-4 gap-3">
-          <img src={avatar} alt="Avatar" className="rounded-circle" style={{ width: 64, height: 64 }} />
+    <div className="container py-4">
+      <div className="card shadow-sm border-0 mb-4">
+        <div className="card-body d-flex align-items-center gap-3">
+          <img
+            src={avatar ? `${API}/images/${avatar}` : DEFAULT_AVATAR}
+            alt="avatar"
+            style={{
+              width: 80,
+              height: 80,
+              borderRadius: '50%',
+              objectFit: 'cover',
+            }}
+            onError={(e) => {
+              e.currentTarget.src = DEFAULT_AVATAR;
+            }}
+          />
           <div>
-            <h5 className="mb-0 fw-bold">{fullName}</h5>
-            <small className="text-muted">{email}</small>
-          </div>
-          <div className="ms-auto d-flex gap-2">
-            <button className="btn btn-outline-secondary" onClick={() => navigate('/update-profile')}>
-              ⚙ Cập nhật thông tin
-            </button>
-            <button className="btn btn-outline-danger" onClick={handleLogout}>Đăng xuất</button>
+            <h4 className="mb-1">{username || 'Người dùng'}</h4>
+            <p className="text-muted mb-0">Trang cá nhân</p>
           </div>
         </div>
-
-        <ul className="nav nav-tabs border-bottom mb-4">
-          {TABS.map(tab => (
-              <li key={tab} className="nav-item">
-                <button
-                    className={`nav-link ${activeTab === tab ? 'active' : ''}`}
-                    onClick={() => handleTabClick(tab)}
-                >
-                  {tab}
-                </button>
-              </li>
-          ))}
-        </ul>
-
-        <h5 className="fw-bold mb-3">{activeTab === 'Bài đã lưu' ? 'Bài viết đã lưu' : 'Danh sách bài viết'}</h5>
-        {filteredPosts.length === 0 ? (
-            <p>Không có bài viết nào.</p>
-        ) : (
-            <>
-              <ul className="list-group">
-                {currentPosts.map(post => (
-                    <li key={post.id} className="list-group-item d-flex align-items-center gap-3">
-                      <img
-                          src={`http://localhost:5094/images/${post.imageUrl}`}
-                          alt={post.title}
-                          className="rounded"
-                          style={{ width: 80, height: 60, objectFit: 'cover' }}
-                      />
-                      <div className="flex-grow-1">
-                        <Link to={`/post/${post.id}`} className="text-decoration-none text-dark">
-                          <strong>{post.title}</strong>
-                        </Link>
-                        <br />
-                        <small className="text-muted">
-                          {new Date(post.createdAt).toLocaleDateString('vi-VN')}
-                        </small>
-                      </div>
-                      {activeTab === 'Bài đã lưu' ? (
-                          <button
-                              className="btn btn-sm btn-outline-danger ms-2"
-                              onClick={() => toggleBookmark(post.id)}
-                          >
-                            ❤️ Bỏ lưu
-                          </button>
-                      ) : post.status === 'Bị Từ Chối' ? (
-                          <div className="text-end">
-                            <span className="badge bg-danger">Bị Từ Chối</span>
-                            {post.rejectReason && (
-                                <div className="small text-muted mt-1" style={{ maxWidth: 200 }}>
-                                  ❌ {post.rejectReason}
-                                </div>
-                            )}
-                          </div>
-                      ) : (
-                          <span className={`badge ${getBadgeClass(post.status)}`}>{post.status}</span>
-                      )}
-
-                      {post.status === 'Nháp' && (
-                          <Link to={`/edit-draft/${post.id}`} className="btn btn-sm btn-outline-primary ms-2">
-                            ✏️ Sửa
-                          </Link>
-                      )}
-                    </li>
-                ))}
-              </ul>
-
-              <nav className="mt-4 d-flex justify-content-center">
-                <ul className="pagination">
-                  {Array.from({ length: Math.ceil(filteredPosts.length / postsPerPage) }).map((_, idx) => (
-                      <li key={idx} className={`page-item ${currentPage === idx + 1 ? 'active' : ''}`}>
-                        <button onClick={() => paginate(idx + 1)} className="page-link">
-                          {idx + 1}
-                        </button>
-                      </li>
-                  ))}
-                </ul>
-              </nav>
-            </>
-        )}
       </div>
-  );
-};
 
-const getBadgeClass = (status) => {
-  switch (status) {
-    case 'Được Duyệt': return 'bg-success';
-    case 'Chờ Duyệt': return 'bg-warning text-dark';
-    case 'Bị Từ Chối': return 'bg-danger';
-    case 'Nháp': return 'bg-secondary';
-    default: return 'bg-light text-dark';
-  }
+      <div className="card shadow-sm border-0 mb-4">
+        <div className="card-body">
+          <h5 className="fw-bold mb-3">Bài viết của tôi</h5>
+
+          {loadingMyPosts ? (
+            <p>Đang tải...</p>
+          ) : myPosts.length === 0 ? (
+            <p>Bạn chưa đăng bài viết nào.</p>
+          ) : (
+            <div className="row">
+              {myPosts.map((post) => (
+                <div key={post.id} className="col-md-4 mb-3">
+                  <div className="card h-100 shadow-sm border-0">
+                    {post.image_url && (
+                      <img
+                        src={`${API}/images/${post.image_url}`}
+                        alt={post.title}
+                        className="card-img-top"
+                        style={{ height: 180, objectFit: 'cover' }}
+                      />
+                    )}
+                    <div className="card-body">
+                      <h6 className="fw-bold">{post.title}</h6>
+                      <small className="text-muted d-block mb-2">
+                        {post.created_at
+                          ? new Date(post.created_at).toLocaleDateString('vi-VN')
+                          : ''}
+                      </small>
+
+                      <div className="d-flex gap-2 flex-wrap">
+                        <Link to={`/post/${post.id}`} className="btn btn-sm btn-outline-primary">
+                          Xem
+                        </Link>
+                        <Link
+                          to={`/edit-draft/${post.id}`}
+                          className="btn btn-sm btn-outline-warning"
+                        >
+                          Sửa
+                        </Link>
+                        <button
+                          className="btn btn-sm btn-outline-danger"
+                          onClick={() => handleDeletePost(post.id)}
+                        >
+                          Xóa
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="card shadow-sm border-0">
+        <div className="card-body">
+          <h5 className="fw-bold mb-3">Bài viết đã lưu</h5>
+
+          {loadingBookmarks ? (
+            <p>Đang tải...</p>
+          ) : bookmarks.length === 0 ? (
+            <p>Bạn chưa lưu bài viết nào.</p>
+          ) : (
+            <div className="row">
+              {bookmarks.map((item) => {
+                const post = item.posts;
+                if (!post) return null;
+
+                return (
+                  <div key={item.id} className="col-md-4 mb-3">
+                    <Link to={`/post/${post.id}`} className="text-decoration-none text-dark">
+                      <div className="card h-100 shadow-sm border-0">
+                        {post.image_url && (
+                          <img
+                            src={`${API}/images/${post.image_url}`}
+                            alt={post.title}
+                            className="card-img-top"
+                            style={{ height: 180, objectFit: 'cover' }}
+                          />
+                        )}
+                        <div className="card-body">
+                          <h6 className="fw-bold">{post.title}</h6>
+                          <small className="text-muted">
+                            {post.author_name || 'Ẩn danh'}
+                          </small>
+                        </div>
+                      </div>
+                    </Link>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default UserProfile;

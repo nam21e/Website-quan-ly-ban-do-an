@@ -1,322 +1,265 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../assets/styles/Home.css';
+
+const API = 'http://localhost:3000';
+const FALLBACK_IMAGE = '/images/banner-doc.jpg';
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
   const [activeTab, setActiveTab] = useState('Tất cả');
-  const [explorePosts, setExplorePosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [keyword, setKeyword] = useState('');
+
+  const navigate = useNavigate();
 
   useEffect(() => {
-    axios
-      .get('http://localhost:5094/api/Post')
-      .then((res) => {
-        setPosts(res.data);
-      })
-      .catch((err) => console.error(err));
+    const fetchPosts = async () => {
+      try {
+        const res = await axios.get(`${API}/posts`);
+        setPosts(Array.isArray(res.data) ? res.data : []);
+      } catch (err) {
+        console.error('Lỗi posts:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPosts();
   }, []);
 
-  useEffect(() => {
-    axios
-      .get('http://localhost:5094/api/Post/top-explore')
-      .then((res) => setExplorePosts(res.data))
-      .catch((err) => console.error('Lỗi khi tải danh sách khám phá:', err));
-  }, []);
+  const handleSearch = () => {
+    const value = keyword.trim();
+    if (!value) return;
+    navigate(`/search?q=${encodeURIComponent(value)}&page=1`);
+  };
 
-  if (posts.length < 4) {
-    return <div className="container py-5 text-center">Đang tải bài viết...</div>;
-  }
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
 
   const regions = ['Tất cả', 'Miền Bắc', 'Miền Trung', 'Miền Nam'];
 
   const filteredPosts =
     activeTab === 'Tất cả'
       ? posts
-      : posts.filter((p) => p.regionName === activeTab);
+      : posts.filter((p) => p.region_name === activeTab);
 
-  const popularPosts = [...posts]
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-    .slice(0, 5);
+  const popularPosts = useMemo(() => {
+    return [...posts]
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+      .slice(0, 5);
+  }, [posts]);
+
+  const explorePosts = useMemo(() => {
+    return [...posts]
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+      .slice(0, 3);
+  }, [posts]);
+
+  const latestPosts = useMemo(() => {
+    return [...filteredPosts]
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+      .slice(0, 6);
+  }, [filteredPosts]);
+
+  if (loading) {
+    return <div className="container py-5 text-center">Đang tải bài viết...</div>;
+  }
+
+  if (!posts.length) {
+    return <div className="container py-5 text-center">Chưa có bài viết nào.</div>;
+  }
 
   return (
-    <>
-      {/* ===== Banner Parallax ===== */}
-      <section className="hero-parallax">
-        <div className="hero-parallax-overlay">
-          <div>
-            <h1 className="hero-parallax-title">Tinh Hoa Ẩm Thực Việt</h1>
-            <p className="hero-parallax-sub">
-              Khám phá hương vị ba miền qua từng món ăn và câu chuyện ẩm thực
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* ===== Nội dung trang ===== */}
+    <div className="home-page">
       <div className="container py-4">
-        {/* Khám Phá Ẩm Thực Ba Miền - Dùng dữ liệu động */}
-        <div className="text-center mb-5">
-          <h4 className="fw-bold mb-4">Khám Phá Ẩm Thực Ba Miền</h4>
-          <div className="row g-4">
-            {explorePosts.slice(0, 3).map((post) => (
-              <div className="col-md-4" key={post.id}>
-                <Link
-                  to={`/post/${post.id}`}
-                  className="text-decoration-none text-dark"
+        <section className="hero-parallax hero-compact mb-4">
+          <div className="hero-parallax-overlay">
+            <div className="text-center hero-content">
+              <h1 className="hero-parallax-title compact-title">Tinh Hoa Ẩm Thực Việt</h1>
+              <p className="hero-parallax-sub compact-sub">
+                Khám phá hương vị ba miền qua từng món ăn
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <div className="home-sticky-tabs mb-4">
+          <div className="home-toolbar">
+            <div className="region-tabs-wrap">
+              {regions.map((region) => (
+                <button
+                  key={region}
+                  className={`region-tab-btn ${activeTab === region ? 'active' : ''}`}
+                  onClick={() => setActiveTab(region)}
                 >
-                  <img
-                    src={`http://localhost:5094/images/${post.imageUrl}`}
-                    alt={post.title}
-                    className="img-fluid rounded"
-                    style={{ height: '400px', objectFit: 'cover' }}
-                  />
-                  <h6 className="mt-3 fw-bold">{post.title}</h6>
-                  <p className="text-muted small">
-                    {(post.content || '')
-                      .replace(/<[^>]+>/g, '')
-                      .slice(0, 120)}
-                    ...
-                  </p>
-                </Link>
-              </div>
-            ))}
+                  {region}
+                </button>
+              ))}
+            </div>
+
+            <div className="search-box-home">
+              <input
+                type="text"
+                className="search-input-home"
+                placeholder="Tìm bài viết..."
+                value={keyword}
+                onChange={(e) => setKeyword(e.target.value)}
+                onKeyDown={handleKeyDown}
+              />
+              <button className="search-btn-home" onClick={handleSearch}>
+                Tìm
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* Tab ẩm thực ba miền */}
-        <div className="row gx-5 my-5">
-          <div className="col-md-8">
-            <div className="d-flex justify-content-between align-items-center mb-3 border-bottom pb-1">
-              <h4 className="fw-bold m-0 text-orange">Ẩm Thực Ba Miền</h4>
-              <ul className="nav nav-pills">
-                {regions.map((region) => (
-                  <li className="nav-item" key={region}>
-                    <button
-                      className={`nav-link ${
-                        activeTab === region ? 'active' : ''
-                      }`}
-                      onClick={() => setActiveTab(region)}
-                    >
-                      {region}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="row g-3">
-              {filteredPosts.slice(0, 1).map((post) => (
-                <div className="col-md-5" key={post.id}>
-                  <div className="food-tab-big-post overflow-hidden mb-2">
-                    <Link
-                      to={`/post/${post.id}`}
-                      className="d-block h-100"
-                    >
-                      <img
-                        src={`http://localhost:5094/images/${post.imageUrl}`}
-                        alt={post.title}
-                        className="w-100 h-100 object-cover"
-                      />
-                    </Link>
-                  </div>
-                  <h5 className="fw-bold mt-2">
-                    <Link
-                      to={`/post/${post.id}`}
-                      className="text-decoration-none text-dark"
-                    >
-                      {post.title}
-                    </Link>
-                  </h5>
-                </div>
-              ))}
-              <div className="col-md-7">
-                <div className="row g-1">
-                  {filteredPosts.slice(1, 4).map((post) => (
-                    <div className="col-12 mb-2" key={post.id}>
-                      <Link
-                        to={`/post/${post.id}`}
-                        className="list-mini-post text-decoration-none text-dark"
-                      >
-                        <img
-                          src={`http://localhost:5094/images/${post.imageUrl}`}
-                          alt={post.title}
-                        />
-                        <div>
-                          <small className="fw-bold d-block">
-                            {post.title}
-                          </small>
-                          <small className="text-muted">
-                            {post.authorName || 'Ẩn danh'} -{' '}
-                            {new Date(post.createdAt).toLocaleDateString(
-                              'vi-VN'
-                            )}
-                          </small>
-                        </div>
-                      </Link>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Bắc & Nam */}
-            <div className="row mt-5">
-              {['Miền Bắc', 'Miền Nam'].map((region, idx) => (
-                <div className="col-md-6" key={idx}>
-                  <div className="d-flex justify-content-between align-items-center mb-2">
-                    <h5 className="fw-bold text-orange">Ẩm Thực {region}</h5>
-                    <Link
-                      to={`/mien-${region === 'Miền Bắc' ? 'bac' : 'nam'}`}
-                      className="small text-decoration-none"
-                    >
-                      MORE &gt;
-                    </Link>
-                  </div>
-                  {posts
-                    .filter((p) => p.regionName === region)
-                    .slice(0, 1)
-                    .map((post) => (
-                      <Link
-                        key={post.id}
-                        to={`/post/${post.id}`}
-                        className="text-decoration-none text-dark d-block mb-2"
-                      >
-                        <img
-                          src={`http://localhost:5094/images/${post.imageUrl}`}
-                          className="w-100"
-                          style={{ height: '220px', objectFit: 'cover' }}
-                          alt={post.title}
-                        />
-                        <h6 className="fw-bold mt-2">{post.title}</h6>
-                      </Link>
-                    ))}
-                  <div className="list-unstyled">
-                    {posts
-                      .filter((p) => p.regionName === region)
-                      .slice(1, 4)
-                      .map((post) => (
-                        <Link
-                          key={post.id}
-                          to={`/post/${post.id}`}
-                          className="list-mini-post text-decoration-none text-dark"
-                        >
-                          <img
-                            src={`http://localhost:5094/images/${post.imageUrl}`}
-                            alt={post.title}
-                          />
-                          <div>
-                            <small className="fw-bold d-block">
-                              {post.title}
-                            </small>
-                            <small className="text-muted">
-                              {post.authorName || 'Ẩn danh'} -{' '}
-                              {new Date(post.createdAt).toLocaleDateString(
-                                'vi-VN'
-                              )}
-                            </small>
-                          </div>
-                        </Link>
-                      ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Món Ngon Nổi Bật */}
-            <div className="row mt-5">
-              <h5 className="fw-bold mb-1">Món Ngon Nổi Bật</h5>
-              <div className="row row-cols-1 row-cols-sm-2 g-3">
-                {posts.slice(0, 6).map((post) => (
-                  <div className="col" key={post.id}>
-                    <Link
-                      to={`/post/${post.id}`}
-                      className="text-decoration-none text-dark"
-                    >
-                      <img
-                        src={`http://localhost:5094/images/${post.imageUrl}`}
-                        alt={post.title}
-                        className="w-100"
-                        style={{ height: '220px', objectFit: 'cover' }}
-                      />
-                      <h6 className="mt-2 fw-semibold">{post.title}</h6>
-                      <small className="text-muted">
-                        {post.authorName || 'Ẩn danh'} -{' '}
-                        {new Date(post.createdAt).toLocaleDateString('vi-VN')}
-                      </small>
-                    </Link>
-                  </div>
-                ))}
-              </div>
+        <section className="mb-5">
+          <div className="section-header">
+            <div>
+              <p className="section-kicker">Nổi bật hôm nay</p>
+              <h3 className="section-title">Khám phá ẩm thực ba miền</h3>
             </div>
           </div>
 
-          {/* Sidebar bài viết phổ biến */}
-          <div className="col-md-4">
-            <h5 className="fw-bold border-start border-4 border-dark ps-2 mb-3">
-              Bài viết phổ biến
-            </h5>
-            {popularPosts.map((post) => (
-              <div key={post.id} className="mb-4 popular-post">
-                <Link
-                  to={`/post/${post.id}`}
-                  className="text-decoration-none text-dark d-block"
-                >
-                  <img
-                    src={`http://localhost:5094/images/${post.imageUrl}`}
-                    alt={post.title}
-                    style={{
-                      width: '300px',
-                      height: '175px',
-                      objectFit: 'cover',
-                      borderRadius: '4px',
-                      flexShrink: 0,
-                    }}
-                  />
-                  <h6 className="fw-bold text-start mt-2">{post.title}</h6>
+          <div className="row g-4">
+            {explorePosts.map((post, index) => (
+              <div className={index === 0 ? 'col-lg-6' : 'col-lg-3 col-md-6'} key={post.id}>
+                <Link to={`/post/${post.id}`} className="text-decoration-none">
+                  <div className={`featured-card ${index === 0 ? 'featured-large' : ''}`}>
+                    <div className="featured-image-wrap">
+                      <img
+                        src={`${API}/images/${post.image_url}`}
+                        alt={post.title}
+                        className="featured-image"
+                        onError={(e) => {
+                          e.currentTarget.src = FALLBACK_IMAGE;
+                        }}
+                      />
+                    </div>
+
+                    <div className="featured-overlay">
+                      <span className="featured-badge">
+                        {post.region_name || 'Ẩm thực'}
+                      </span>
+                      <h5 className="featured-title">{post.title}</h5>
+                      <small className="featured-meta">
+                        {post.author_name || 'Ẩn danh'}
+                      </small>
+                    </div>
+                  </div>
                 </Link>
               </div>
             ))}
+          </div>
+        </section>
 
-            {/* Banner dọc */}
-            <div className="my-4">
-              <img
-                src="/images/banner-doc.jpg"
-                alt="Banner Quảng Cáo"
-                className="img-fluid w-100"
-                style={{ maxHeight: '600px', objectFit: 'cover' }}
-              />
+        <section className="row gx-4 gy-4">
+          <div className="col-lg-8">
+            <div className="section-header mb-3">
+              <div>
+                <p className="section-kicker">Bài viết mới</p>
+                <h3 className="section-title">
+                  {activeTab === 'Tất cả' ? 'Tất cả bài viết' : activeTab}
+                </h3>
+              </div>
             </div>
 
-            {/* Tags section */}
-            <div>
-              <h5 className="fw-bold border-start border-4 border-dark ps-2 mb-3">
-                Tags
-              </h5>
-              <div className="d-flex flex-wrap gap-2">
-                {[
-                  'Bún',
-                  'Phở',
-                  'Ẩm thực Bắc',
-                  'Ẩm thực Nam',
-                  'Hè',
-                  'Món ngon',
-                  'Mới nhất',
-                ].map((tag, i) => (
+            <div className="row g-4">
+              {latestPosts.length === 0 ? (
+                <div className="col-12">
+                  <div className="empty-box">Chưa có bài viết nào cho mục này.</div>
+                </div>
+              ) : (
+                latestPosts.map((post) => (
+                  <div className="col-md-6" key={post.id}>
+                    <Link to={`/post/${post.id}`} className="text-decoration-none">
+                      <article className="food-card h-100">
+                        <div className="food-card-image-wrap">
+                          <img
+                            src={`${API}/images/${post.image_url}`}
+                            className="food-card-image"
+                            alt={post.title}
+                            onError={(e) => {
+                              e.currentTarget.src = FALLBACK_IMAGE;
+                            }}
+                          />
+                        </div>
+
+                        <div className="food-card-body">
+                          <div className="food-card-topline">
+                            <span className="food-card-region">
+                              {post.region_name || 'Ẩm thực'}
+                            </span>
+                            <span className="food-card-date">
+                              {post.created_at
+                                ? new Date(post.created_at).toLocaleDateString('vi-VN')
+                                : ''}
+                            </span>
+                          </div>
+
+                          <h5 className="food-card-title">{post.title}</h5>
+
+                          <p className="food-card-author">
+                            {post.author_name || 'Ẩn danh'}
+                          </p>
+                        </div>
+                      </article>
+                    </Link>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+
+          <div className="col-lg-4">
+            <div className="sidebar-box">
+              <div className="section-header mb-3">
+                <div>
+                  <p className="section-kicker">Đề xuất</p>
+                  <h4 className="section-title small-title">Bài viết phổ biến</h4>
+                </div>
+              </div>
+
+              <div className="popular-list">
+                {popularPosts.map((post, index) => (
                   <Link
-                    key={i}
-                    to={`/tag/${encodeURIComponent(tag)}`}
-                    className="badge rounded-pill bg-light text-dark px-3 py-2 border text-decoration-none"
+                    to={`/post/${post.id}`}
+                    key={post.id}
+                    className="popular-item text-decoration-none"
                   >
-                    {tag}
+                    <div className="popular-rank">{index + 1}</div>
+
+                    <img
+                      src={`${API}/images/${post.image_url}`}
+                      className="popular-thumb"
+                      alt={post.title}
+                      onError={(e) => {
+                        e.currentTarget.src = FALLBACK_IMAGE;
+                      }}
+                    />
+
+                    <div className="popular-content">
+                      <h6 className="popular-title">{post.title}</h6>
+                      <small className="popular-meta">
+                        {post.author_name || 'Ẩn danh'} •{' '}
+                        {post.created_at
+                          ? new Date(post.created_at).toLocaleDateString('vi-VN')
+                          : ''}
+                      </small>
+                    </div>
                   </Link>
                 ))}
               </div>
             </div>
           </div>
-        </div>
+        </section>
       </div>
-    </>
+    </div>
   );
 };
 

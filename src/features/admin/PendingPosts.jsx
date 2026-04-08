@@ -1,7 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import {Modal, Button} from 'react-bootstrap';
+import { Modal, Button } from 'react-bootstrap';
 import Swal from 'sweetalert2';
+
+const API = 'http://localhost:3000';
+const FALLBACK_IMAGE = '/images/banner-doc.jpg';
 
 const PendingPosts = () => {
     const [posts, setPosts] = useState([]);
@@ -12,14 +15,21 @@ const PendingPosts = () => {
     const fetchPosts = async () => {
         setLoading(true);
         try {
-            const res = await axios.get('http://localhost:5094/api/PostApproval/pending', {
+            const res = await axios.get(`${API}/posts/admin/all`, {
                 headers: {
-                    Authorization: `Bearer ${localStorage.getItem('admin_token')}`
-                }
+                    Authorization: `Bearer ${localStorage.getItem('admin_token') || ''}`,
+                },
             });
-            setPosts(res.data);
+
+            const allPosts = Array.isArray(res.data) ? res.data : [];
+            const pendingOnly = allPosts.filter(
+                (post) => (post.status || '') === 'Chờ Duyệt'
+            );
+
+            setPosts(pendingOnly);
         } catch (err) {
             console.error('Lỗi khi tải danh sách:', err);
+            setPosts([]);
         } finally {
             setLoading(false);
         }
@@ -30,41 +40,63 @@ const PendingPosts = () => {
     }, []);
 
     const handleApprove = async (id) => {
+        const confirmApprove = window.confirm('Bạn có chắc muốn duyệt bài viết này?');
+        if (!confirmApprove) return;
+
         try {
-            await axios.post(`http://localhost:5094/api/PostApproval/approve/${id}`, null, {
-                headers: {Authorization: `Bearer ${localStorage.getItem('admin_token')}`}
-            });
+            await axios.put(
+                `${API}/posts/${id}/approve`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('admin_token') || ''}`,
+                    },
+                }
+            );
+
+            Swal.fire('Thành công!', 'Bài viết đã được duyệt.', 'success');
             fetchPosts();
         } catch (err) {
             console.error('Lỗi khi duyệt bài viết:', err);
+            Swal.fire('Lỗi!', 'Không thể duyệt bài viết.', 'error');
         }
     };
 
     const handleReject = async (id) => {
-        const {value: reason} = await Swal.fire({
+        const { value: reason } = await Swal.fire({
             title: 'Nhập lý do từ chối',
             input: 'textarea',
             inputLabel: 'Lý do',
             inputPlaceholder: 'Nhập lý do từ chối bài viết...',
             inputAttributes: {
-                'aria-label': 'Nhập lý do từ chối bài viết'
+                'aria-label': 'Nhập lý do từ chối bài viết',
             },
             showCancelButton: true,
             confirmButtonText: 'Gửi từ chối',
-            cancelButtonText: 'Huỷ'
+            cancelButtonText: 'Huỷ',
         });
 
-        if (reason) {
-            try {
-                await axios.post(`http://localhost:5094/api/PostApproval/reject/${id}`, {reason}, {
-                    headers: {Authorization: `Bearer ${localStorage.getItem('admin_token')}`}
-                });
-                Swal.fire('Đã từ chối!', 'Bài viết đã bị từ chối.', 'success');
-                fetchPosts();
-            } catch (err) {
-                console.error('Lỗi khi từ chối bài viết:', err);
-                Swal.fire('Lỗi!', 'Không thể từ chối bài viết.', 'error');
-            }
+        if (!reason) return;
+
+        try {
+            await axios.put(
+                `${API}/posts/${id}`,
+                {
+                    status: 'Bị Từ Chối',
+                    reject_reason: reason,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('admin_token') || ''}`,
+                    },
+                }
+            );
+
+            Swal.fire('Đã từ chối!', 'Bài viết đã bị từ chối.', 'success');
+            fetchPosts();
+        } catch (err) {
+            console.error('Lỗi khi từ chối bài viết:', err);
+            Swal.fire('Lỗi!', 'Không thể từ chối bài viết.', 'error');
         }
     };
 
@@ -80,6 +112,7 @@ const PendingPosts = () => {
             <button className="btn btn-outline-primary mb-3" onClick={fetchPosts}>
                 🔄 Tải lại danh sách
             </button>
+
             {loading ? (
                 <p>Đang tải dữ liệu...</p>
             ) : posts.length === 0 ? (
@@ -88,86 +121,133 @@ const PendingPosts = () => {
                 <div className="table-responsive">
                     <table className="table table-hover align-middle">
                         <thead className="table-light">
-                        <tr>
-                            <th>#</th>
-                            <th>Hình Ảnh</th>
-                            <th>Tiêu Đề</th>
-                            <th>Tác Giả</th>
-                            <th>Ngày Tạo</th>
-                            <th>Hành Động</th>
-                        </tr>
+                            <tr>
+                                <th>#</th>
+                                <th>Hình Ảnh</th>
+                                <th>Tiêu Đề</th>
+                                <th>Tác Giả</th>
+                                <th>Ngày Tạo</th>
+                                <th>Hành Động</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        {posts.map((post, index) => (
-                            <tr key={post.id}>
-                                <td>{index + 1}</td>
-                                <td>
-                                    <img
-                                        src={`http://localhost:5094/images/${post.imageUrl}`}
-                                        alt="Ảnh bài viết"
-                                        style={{width: 70, height: 50, objectFit: 'cover', borderRadius: 5}}
-                                    />
-                                </td>
-                                <td>{post.title}</td>
-                                <td className="text-primary fw-semibold">{post.authorName}</td>
-                                <td>{new Date(post.createdAt).toLocaleDateString('vi-VN')}</td>
-                                <td>
-                                    <div className="d-flex gap-2">
-                                        <button
-                                            className="btn btn-sm btn-primary"
-                                            onClick={() => handleView(post)}
-                                        >
-                                            ✏ Xem nội dung
-                                        </button>
-                                        <button
-                                            className="btn btn-sm btn-success"
-                                            onClick={() => handleApprove(post.id)}
-                                        >
-                                            ✔ Duyệt
-                                        </button>
-                                        <button
-                                            className="btn btn-sm btn-danger"
-                                            onClick={() => handleReject(post.id)}
-                                        >
-                                            ✖ Từ chối
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
+                            {posts.map((post, index) => {
+                                const imageUrl = post.image_url || post.imageUrl || '';
+                                const authorName =
+                                    post.author_name || post.authorName || 'Ẩn danh';
+                                const createdAt = post.created_at || post.createdAt;
+
+                                return (
+                                    <tr key={post.id}>
+                                        <td>{index + 1}</td>
+                                        <td>
+                                            <img
+                                                src={
+                                                    imageUrl
+                                                        ? `${API}/images/${imageUrl}`
+                                                        : FALLBACK_IMAGE
+                                                }
+                                                alt="Ảnh bài viết"
+                                                style={{
+                                                    width: 70,
+                                                    height: 50,
+                                                    objectFit: 'cover',
+                                                    borderRadius: 5,
+                                                }}
+                                                onError={(e) => {
+                                                    e.currentTarget.src = FALLBACK_IMAGE;
+                                                }}
+                                            />
+                                        </td>
+                                        <td>{post.title}</td>
+                                        <td className="text-primary fw-semibold">
+                                            {authorName}
+                                        </td>
+                                        <td>
+                                            {createdAt
+                                                ? new Date(createdAt).toLocaleDateString('vi-VN')
+                                                : ''}
+                                        </td>
+                                        <td>
+                                            <div className="d-flex gap-2">
+                                                <button
+                                                    className="btn btn-sm btn-primary"
+                                                    onClick={() => handleView(post)}
+                                                >
+                                                    ✏ Xem nội dung
+                                                </button>
+                                                <button
+                                                    className="btn btn-sm btn-success"
+                                                    onClick={() => handleApprove(post.id)}
+                                                >
+                                                    ✔ Duyệt
+                                                </button>
+                                                <button
+                                                    className="btn btn-sm btn-danger"
+                                                    onClick={() => handleReject(post.id)}
+                                                >
+                                                    ✖ Từ chối
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                );
+                            })}
                         </tbody>
                     </table>
                 </div>
             )}
 
-            {/* MODAL XEM CHI TIẾT */}
             <Modal size="lg" show={showModal} onHide={() => setShowModal(false)}>
                 <Modal.Header closeButton>
                     <Modal.Title>📄 {selectedPost?.title}</Modal.Title>
                 </Modal.Header>
-                <Modal.Body style={{maxHeight: '80vh', overflowY: 'auto'}}>
-                    <div className="mb-2"><strong>Tác giả:</strong> {selectedPost?.authorName || 'Ẩn danh'}</div>
-                    <div className="mb-2"><strong>Ngày
-                        tạo:</strong> {selectedPost?.createdAt ? new Date(selectedPost.createdAt).toLocaleDateString('vi-VN') : ''}
+
+                <Modal.Body style={{ maxHeight: '80vh', overflowY: 'auto' }}>
+                    <div className="mb-2">
+                        <strong>Tác giả:</strong>{' '}
+                        {selectedPost?.author_name ||
+                            selectedPost?.authorName ||
+                            'Ẩn danh'}
                     </div>
 
-                    {selectedPost?.imageUrl && (
+                    <div className="mb-2">
+                        <strong>Ngày tạo:</strong>{' '}
+                        {selectedPost?.created_at || selectedPost?.createdAt
+                            ? new Date(
+                                  selectedPost?.created_at || selectedPost?.createdAt
+                              ).toLocaleDateString('vi-VN')
+                            : ''}
+                    </div>
+
+                    {(selectedPost?.image_url || selectedPost?.imageUrl) && (
                         <div className="mb-3">
-                            <strong>Ảnh đại diện:</strong><br/>
+                            <strong>Ảnh đại diện:</strong>
+                            <br />
                             <img
-                                src={`http://localhost:5094/images/${selectedPost.imageUrl}`}
+                                src={`${API}/images/${
+                                    selectedPost?.image_url || selectedPost?.imageUrl
+                                }`}
                                 alt="Ảnh đại diện"
                                 className="img-fluid rounded mt-2"
-                                style={{maxHeight: '250px'}}
+                                style={{ maxHeight: '250px' }}
+                                onError={(e) => {
+                                    e.currentTarget.src = FALLBACK_IMAGE;
+                                }}
                             />
                         </div>
                     )}
-                    <hr/>
+
+                    <hr />
+
                     <div
                         className="post-preview-content"
-                        dangerouslySetInnerHTML={{__html: selectedPost?.content || ''}}
+                        dangerouslySetInnerHTML={{
+                            __html: selectedPost?.content || '',
+                        }}
                     />
                 </Modal.Body>
+
                 <Modal.Footer>
                     <Button variant="secondary" onClick={() => setShowModal(false)}>
                         Đóng

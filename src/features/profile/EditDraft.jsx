@@ -1,233 +1,202 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { useParams, useNavigate, Navigate } from 'react-router-dom';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import RegionSelect from '../../components/ui/RegionSelect';
-import { useAuth } from '../auth/useAuth';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import '../../assets/styles/editor.css';
+import { useNavigate, useParams } from 'react-router-dom';
+
+const API = 'http://localhost:3000';
 
 const EditDraft = () => {
-    const { id } = useParams();
-    const navigate = useNavigate();
-    const { isLoggedIn } = useAuth();
+  const { id } = useParams();
+  const navigate = useNavigate();
 
-    const [title, setTitle] = useState('');
-    const [regionId, setRegionId] = useState('');
-    const [content, setContent] = useState('');
-    const [imageFile, setImageFile] = useState(null);
-    const [oldImage, setOldImage] = useState('');
-    const [tags, setTags] = useState([]);
-    const [tagInput, setTagInput] = useState('');
-    const [editorReady, setEditorReady] = useState(false);
-    const imageRef = useRef();
-    const tempContentRef = useRef('');
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [message, setMessage] = useState('');
 
-    useEffect(() => {
-        axios.get(`/api/post/draft/${id}`, {
-            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-        })
-            .then(res => {
-                const p = res.data;
-                if (p.status !== 'Nháp') return navigate('/profile');
-                setTitle(p.title);
-                tempContentRef.current = p.content || '';
-                setRegionId(p.regionId);
-                setOldImage(p.imageUrl);
-                setTags(p.postTags?.map(pt => pt.tag.name) || []);
-            })
-            .catch(() => navigate('/profile'));
-    }, [id, navigate]);
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const [regionName, setRegionName] = useState('');
+  const [imageFile, setImageFile] = useState(null);
+  const [preview, setPreview] = useState('');
+  const [post, setPost] = useState(null);
 
-    const handleImageUpload = (e) => {
-        setImageFile(e.target.files[0]);
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        setLoading(true);
+        const res = await axios.get(`${API}/posts/${id}`);
+        const data = res.data;
+
+        setPost(data || null);
+        setTitle(data?.title || '');
+        setContent(data?.content || '');
+        setRegionName(data?.region_name || '');
+        setPreview(data?.image_url ? `${API}/images/${data.image_url}` : '');
+      } catch (error) {
+        console.error('Lỗi tải bài viết:', error);
+        setMessage(error?.response?.data?.message || 'Không tải được bài viết');
+      } finally {
+        setLoading(false);
+      }
     };
 
-    const handleAddTag = (e) => {
-        e.preventDefault();
-        const trimmed = tagInput.trim();
-        if (trimmed && !tags.includes(trimmed)) {
-            setTags([...tags, trimmed]);
-        }
-        setTagInput('');
-    };
-
-    const handleRemoveTag = (tagToRemove) => {
-        setTags(tags.filter(tag => tag !== tagToRemove));
-    };
-
-    const handleUpdate = async (e) => {
-        e.preventDefault();
-
-        if (!editorReady) {
-            toast.error("Trình soạn thảo chưa sẵn sàng.");
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append('title', title);
-        formData.append('regionId', regionId);
-        formData.append('content', content);
-        if (imageFile) formData.append('imageFile', imageFile);
-        tags.forEach(tag => formData.append('tags', tag));
-
-        try {
-            await axios.put(`/api/post/draft/${id}`, formData, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
-            toast.success('Cập nhật bản nháp thành công!');
-        } catch (err) {
-            console.error("Lỗi:", err.response?.data || err.message);
-            toast.error('❌ Lỗi khi cập nhật bản nháp!');
-        }
-    };
-
-    const handlePublish = async () => {
-        if (!window.confirm('Bạn có chắc muốn đăng bài này không?')) return;
-        try {
-            await axios.post(`/api/post/publish/${id}`, {}, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-            });
-            toast.success('🎉 Bài viết đã được gửi duyệt!');
-            navigate('/profile');
-        } catch (err) {
-            console.error(err);
-            toast.error('❌ Lỗi khi đăng bài!');
-        }
-    };
-
-    function CustomUploadAdapterPlugin(editor) {
-        editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
-            return {
-                upload: async () => {
-                    const data = new FormData();
-                    const file = await loader.file;
-                    data.append('file', file);
-                    try {
-                        const res = await axios.post('/api/post/ckeditor-upload', data, {
-                            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-                        });
-                        return { default: res.data.url };
-                    } catch (error) {
-                        console.error('Upload error:', error);
-                        throw error;
-                    }
-                }
-            };
-        };
+    if (id) {
+      fetchPost();
     }
+  }, [id]);
 
-    if (!isLoggedIn) return <Navigate to="/login" replace />;
+  const handleImageChange = (e) => {
+    const file = e.target.files?.[0] || null;
+    setImageFile(file);
 
-    return (
-        <div className="container py-4">
-            <h2 className="text-center text-primary fw-bold mb-4">📝 Chỉnh sửa Bản Nháp</h2>
+    if (file) {
+      setPreview(URL.createObjectURL(file));
+    }
+  };
 
-            <form onSubmit={handleUpdate} className="row mt-4">
-                <div className="col-md-8 mb-4 editor-wrapper" style={{ minHeight: '500px', position: 'relative', zIndex: 1 }}>
-                    <CKEditor
-                        editor={ClassicEditor}
-                        config={{
-                            extraPlugins: [CustomUploadAdapterPlugin],
-                            toolbar: { shouldNotGroupWhenFull: true },
-                            htmlSupport: {
-                                allow: [
-                                    { name: 'img', attributes: true },
-                                    { name: 'iframe', attributes: true },
-                                    { name: 'a', attributes: true },
-                                    { name: 'p', attributes: true },
-                                    { name: 'h2', attributes: true },
-                                    { name: 'strong', attributes: true },
-                                    { name: 'ul', attributes: true },
-                                    { name: 'ol', attributes: true },
-                                    { name: 'li', attributes: true }
-                                ]
-                            }
-                        }}
-                        onReady={(editor) => {
-                            setEditorReady(true);
-                            editor.setData(tempContentRef.current);  // ✅ Gán content thủ công
-                        }}
-                        onChange={(event, editor) => {
-                            setContent(editor.getData());
-                        }}
-                    />
-                </div>
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-                <div className="col-md-4">
-                    <h5 className="fw-bold mb-3">Thông Tin <span className="text-primary">Bài Viết</span></h5>
+    try {
+      setSubmitting(true);
+      setMessage('');
 
-                    <div className="mb-3">
-                        <label className="form-label">Tiêu Đề Bài Viết</label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            required
-                        />
-                    </div>
+      if (!title.trim() || !content.trim()) {
+        setMessage('Vui lòng nhập tiêu đề và nội dung');
+        return;
+      }
 
-                    <div className="mb-3">
-                        <label className="form-label">Vùng Miền</label>
-                        <RegionSelect value={regionId} onChange={(e) => setRegionId(e.target.value)} />
-                    </div>
+      let image_url = post?.image_url || null;
 
-                    <div className="mb-3">
-                        <label className="form-label">Ảnh Hiện Tại</label><br />
-                        {oldImage && (
-                            <img
-                                src={`http://localhost:5094/images/${oldImage}`}
-                                alt="current"
-                                className="img-fluid rounded mb-2"
-                                style={{ maxHeight: 150 }}
-                            />
-                        )}
-                        <input
-                            type="file"
-                            className="form-control"
-                            onChange={handleImageUpload}
-                            ref={imageRef}
-                        />
-                    </div>
+      if (imageFile) {
+        const formData = new FormData();
+        formData.append('image', imageFile);
 
-                    <div className="mb-3">
-                        <label className="form-label">Tags (nhấn Enter để thêm)</label>
-                        <div className="d-flex gap-2 flex-wrap mb-2">
-                            {tags.map((tag, i) => (
-                                <span key={i} className="badge bg-info text-dark px-2 py-1">
-                                    {tag}
-                                    <button
-                                        type="button"
-                                        className="btn-close btn-close-white btn-sm ms-2"
-                                        onClick={() => handleRemoveTag(tag)}
-                                    ></button>
-                                </span>
-                            ))}
-                        </div>
-                        <input
-                            type="text"
-                            className="form-control"
-                            placeholder="Nhập tag và nhấn Enter"
-                            value={tagInput}
-                            onChange={(e) => setTagInput(e.target.value)}
-                            onKeyDown={(e) => e.key === 'Enter' && handleAddTag(e)}
-                        />
-                    </div>
+        const uploadRes = await axios.post(`${API}/upload`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
 
-                    <div className="d-flex gap-3 mt-4">
-                        <button type="submit" className="btn btn-primary flex-fill">💾 Cập nhật</button>
-                        <button type="button" className="btn btn-success flex-fill" onClick={handlePublish}>🚀 Đăng bài</button>
-                    </div>
-                </div>
-            </form>
+        image_url = uploadRes.data.filename;
+      }
+
+      const username = localStorage.getItem('username');
+
+      await axios.put(`${API}/posts/${id}`, {
+        title: title.trim(),
+        content: content.trim(),
+        image_url,
+        author_name: username || post?.author_name || 'Ẩn danh',
+        region_name: regionName || null,
+      });
+
+      alert('Cập nhật bài viết thành công');
+      navigate('/profile');
+    } catch (error) {
+      console.error('Lỗi cập nhật bài viết:', error);
+      setMessage(error?.response?.data?.message || 'Cập nhật bài viết thất bại');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (loading) {
+    return <div className="container py-4">Đang tải bài viết...</div>;
+  }
+
+  if (!post) {
+    return <div className="container py-4">Không tìm thấy bài viết.</div>;
+  }
+
+  return (
+    <div className="container py-4" style={{ maxWidth: '700px' }}>
+      <h2 className="fw-bold mb-4">Sửa bài viết</h2>
+
+      {message && (
+        <div className={`alert ${message.includes('thành công') ? 'alert-success' : 'alert-danger'}`}>
+          {message}
         </div>
-    );
+      )}
+
+      <form onSubmit={handleSubmit}>
+        <div className="mb-3">
+          <label className="form-label">Tiêu đề</label>
+          <input
+            type="text"
+            className="form-control"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Nhập tiêu đề bài viết"
+          />
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label">Nội dung</label>
+          <textarea
+            className="form-control"
+            rows="8"
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder="Nhập nội dung bài viết"
+          />
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label">Chọn miền</label>
+          <select
+            className="form-control"
+            value={regionName}
+            onChange={(e) => setRegionName(e.target.value)}
+          >
+            <option value="">-- Chọn miền --</option>
+            <option value="Miền Bắc">Miền Bắc</option>
+            <option value="Miền Trung">Miền Trung</option>
+            <option value="Miền Nam">Miền Nam</option>
+          </select>
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label">Chọn ảnh mới</label>
+          <input
+            type="file"
+            className="form-control"
+            accept="image/*"
+            onChange={handleImageChange}
+          />
+        </div>
+
+        {preview && (
+          <div className="mb-3">
+            <label className="form-label">Xem trước ảnh</label>
+            <div>
+              <img
+                src={preview}
+                alt="preview"
+                style={{
+                  width: '100%',
+                  maxHeight: '300px',
+                  objectFit: 'cover',
+                  borderRadius: '8px',
+                }}
+              />
+            </div>
+          </div>
+        )}
+
+        <div className="d-flex gap-2">
+          <button type="submit" className="btn btn-primary" disabled={submitting}>
+            {submitting ? 'Đang lưu...' : 'Lưu thay đổi'}
+          </button>
+
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => navigate('/profile')}
+          >
+            Quay lại
+          </button>
+        </div>
+      </form>
+    </div>
+  );
 };
 
 export default EditDraft;

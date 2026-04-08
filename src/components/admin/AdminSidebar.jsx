@@ -8,46 +8,67 @@ const AdminSidebar = () => {
         const confirmLogout = window.confirm("Bạn có chắc muốn đăng xuất?");
         if (!confirmLogout) return;
 
-        localStorage.removeItem('admin_token');
-        localStorage.removeItem('admin_username');
-        localStorage.removeItem('admin_roles');
-        localStorage.removeItem('admin_email');
-        localStorage.removeItem('admin_fullName');
+        localStorage.clear(); // 🔥 gọn hơn
 
         navigate('/admin-login');
     };
+
+    const linkClass = ({ isActive }) =>
+        `nav-link ${isActive ? 'active bg-primary text-white' : ''}`;
 
     return (
         <nav className="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
             <div className="sb-sidenav-menu">
                 <div className="nav">
-                    <NavLink to="/admin" className="nav-link">
+
+                    {/* DASHBOARD */}
+                    <NavLink to="/admin" className={linkClass}>
                         <div className="sb-nav-link-icon"><i className="fas fa-home"></i></div>
-                        Trang chủ
+                        Dashboard
                     </NavLink>
 
+                    {/* POSTS */}
                     <div className="sb-sidenav-menu-heading">Bài viết</div>
-                    <NavLink to="/admin/posts" className="nav-link">
+
+                    <NavLink to="/admin/posts" className={linkClass}>
                         <div className="sb-nav-link-icon"><i className="fas fa-file-alt"></i></div>
                         Danh sách bài viết
                     </NavLink>
-                    <NavLink to="/admin/add-region" className="nav-link">
+
+                    <NavLink to="/admin/pending-posts" className={linkClass}>
+                        <div className="sb-nav-link-icon"><i className="fas fa-clock"></i></div>
+                        Duyệt bài chờ
+                    </NavLink>
+
+                    <NavLink to="/admin/add-post" className={linkClass}>
+                        <div className="sb-nav-link-icon"><i className="fas fa-plus"></i></div>
+                        Thêm bài viết
+                    </NavLink>
+
+                    <NavLink to="/admin/add-region" className={linkClass}>
                         <div className="sb-nav-link-icon"><i className="fas fa-map-marker-alt"></i></div>
                         Thêm vùng miền
                     </NavLink>
-                    <NavLink to="/admin/comments" className="nav-link">
-                        <div className="sb-nav-link-icon"><i className="fas fa-comments"></i></div>
-                        Quản lý bình luận
-                    </NavLink>
+
+                    {/* USERS */}
                     <div className="sb-sidenav-menu-heading">Tài khoản</div>
-                    <NavLink to="/admin/users" className="nav-link">
+
+                    <NavLink to="/admin/users" className={linkClass}>
                         <div className="sb-nav-link-icon"><i className="fas fa-user"></i></div>
-                        Quản Lý Người Dùng
+                        Người dùng
                     </NavLink>
-                    <button className="nav-link btn text-start text-white" onClick={handleLogout}>
-                        <div className="sb-nav-link-icon"><i className="fas fa-sign-out-alt"></i></div>
+
+                    {/* LOGOUT */}
+                    <button
+                        className="nav-link btn text-start text-white"
+                        onClick={handleLogout}
+                    >
+                        <div className="sb-nav-link-icon">
+                            <i className="fas fa-sign-out-alt"></i>
+                        </div>
                         Đăng xuất
                     </button>
+
                 </div>
             </div>
         </nav>

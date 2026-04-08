@@ -1,18 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+
+const API = 'http://localhost:3000';
 
 const AddRegion = () => {
   const [name, setName] = useState('');
   const [regions, setRegions] = useState([]);
-  const [editingId, setEditingId] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  // Lấy danh sách vùng miền
   const fetchRegions = async () => {
     try {
-      const res = await axios.get('http://localhost:5094/api/Region');
-      setRegions(res.data);
-    } catch (err) {
-      console.error('Lỗi khi lấy vùng miền:', err);
+      const res = await axios.get(`${API}/regions`);
+      setRegions(Array.isArray(res.data) ? res.data : []);
+    } catch (error) {
+      console.error('Lỗi tải vùng miền:', error);
+      setRegions([]);
     }
   };
 
@@ -22,44 +24,60 @@ const AddRegion = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!name.trim()) {
+      alert('Vui lòng nhập tên vùng miền');
+      return;
+    }
+
     try {
-      if (editingId) {
-        await axios.put(`http://localhost:5094/api/Region/${editingId}`, { id: editingId, name });
-        alert('Cập nhật thành công!');
-      } else {
-        await axios.post('http://localhost:5094/api/Region', { name });
-        alert('Thêm vùng miền thành công!');
-      }
+      setLoading(true);
+
+      await axios.post(
+        `${API}/regions`,
+        { name: name.trim() },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('admin_token') || ''}`,
+          },
+        }
+      );
+
+      alert('Thêm vùng miền thành công!');
       setName('');
-      setEditingId(null);
       fetchRegions();
-    } catch (err) {
-      console.error(err);
-      alert('Có lỗi xảy ra!');
+    } catch (error) {
+      console.error('Lỗi thêm vùng miền:', error);
+      alert('Không thể thêm vùng miền!');
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleEdit = (region) => {
-    setName(region.name);
-    setEditingId(region.id);
-  };
-
   const handleDelete = async (id) => {
-    if (window.confirm('Bạn có chắc muốn xoá vùng miền này?')) {
-      try {
-        await axios.delete(`http://localhost:5094/api/Region/${id}`);
-        fetchRegions();
-      } catch (err) {
-        console.error(err);
-        alert('Không thể xoá vùng miền!');
-      }
+    const ok = window.confirm('Bạn có chắc muốn xóa vùng miền này?');
+    if (!ok) return;
+
+    try {
+      await axios.delete(`${API}/regions/${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('admin_token') || ''}`,
+        },
+      });
+
+      alert('Xóa vùng miền thành công!');
+      fetchRegions();
+    } catch (error) {
+      console.error('Lỗi xóa vùng miền:', error);
+      alert('Không thể xóa vùng miền!');
     }
   };
 
   return (
-    <div>
-      <h3>{editingId ? 'Cập nhật Vùng Miền' : 'Thêm Vùng Miền'}</h3>
-      <form onSubmit={handleSubmit}>
+    <div className="container-fluid">
+      <h2 className="fw-bold mb-4">Thêm Vùng Miền</h2>
+
+      <form onSubmit={handleSubmit} className="mb-4">
         <div className="mb-3">
           <label className="form-label">Tên vùng miền</label>
           <input
@@ -67,56 +85,55 @@ const AddRegion = () => {
             className="form-control"
             placeholder="Miền Bắc / Trung / Nam..."
             value={name}
-            onChange={e => setName(e.target.value)}
-            required
+            onChange={(e) => setName(e.target.value)}
           />
         </div>
-        <button type="submit" className="btn btn-success">
-          {editingId ? 'Cập nhật' : 'Thêm'}
+
+        <button type="submit" className="btn btn-success" disabled={loading}>
+          {loading ? 'Đang thêm...' : 'Thêm'}
         </button>
-        {editingId && (
-          <button type="button" className="btn btn-secondary ms-2" onClick={() => {
-            setEditingId(null);
-            setName('');
-          }}>
-            Huỷ
-          </button>
-        )}
       </form>
 
       <hr />
 
-      <h4 className="mt-4">Danh sách vùng miền</h4>
-      <table className="table table-bordered mt-3">
-        <thead className="table-light">
-          <tr>
-            <th>#</th>
-            <th>Tên vùng miền</th>
-            <th>Hành động</th>
-          </tr>
-        </thead>
-        <tbody>
-          {regions.map((region, index) => (
-            <tr key={region.id}>
-              <td>{index + 1}</td>
-              <td>{region.name}</td>
-              <td>
-                <button className="btn btn-warning btn-sm me-2" onClick={() => handleEdit(region)}>
-                  Sửa
-                </button>
-                <button className="btn btn-danger btn-sm" onClick={() => handleDelete(region.id)}>
-                  Xoá
-                </button>
-              </td>
-            </tr>
-          ))}
-          {regions.length === 0 && (
+      <h3 className="fw-bold mb-3">Danh sách vùng miền</h3>
+
+      <div className="table-responsive">
+        <table className="table table-bordered table-hover align-middle">
+          <thead className="table-light">
             <tr>
-              <td colSpan="3" className="text-center">Chưa có vùng miền nào</td>
+              <th style={{ width: '80px' }}>#</th>
+              <th>Tên vùng miền</th>
+              <th style={{ width: '160px' }}>Hành động</th>
             </tr>
-          )}
-        </tbody>
-      </table>
+          </thead>
+
+          <tbody>
+            {regions.length === 0 ? (
+              <tr>
+                <td colSpan="3" className="text-center">
+                  Chưa có vùng miền nào
+                </td>
+              </tr>
+            ) : (
+              regions.map((region, index) => (
+                <tr key={region.id}>
+                  <td>{index + 1}</td>
+                  <td>{region.name || region.region_name}</td>
+                  <td>
+                    <button
+                      className="btn btn-sm btn-outline-danger"
+                      onClick={() => handleDelete(region.id)}
+                    >
+                      Xóa
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

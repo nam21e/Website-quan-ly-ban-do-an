@@ -1,26 +1,12 @@
+import { useMemo } from 'react';
+
 export const useAdminAuth = () => {
-    const token = localStorage.getItem('admin_token');
-    if (!token) return { isAdmin: false };
+  const token = localStorage.getItem('admin_token');
+  const roles = JSON.parse(localStorage.getItem('admin_roles') || '[]');
 
-    try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        const currentTime = Math.floor(Date.now() / 1000);
+  const isAdmin = useMemo(() => {
+    return !!token && Array.isArray(roles) && roles.includes('Admin');
+  }, [token, roles]);
 
-        if (!payload.exp || payload.exp < currentTime) {
-            localStorage.removeItem('admin_token');
-            return { isAdmin: false };
-        }
-
-        let roles = payload.role;
-        if (!Array.isArray(roles)) roles = [roles];
-
-        const isAdmin = roles.some(role => role?.toLowerCase() === 'admin');
-
-        return {
-            isAdmin,
-            roles
-        };
-    } catch (e) {
-        return { isAdmin: false };
-    }
+  return { isAdmin };
 };
